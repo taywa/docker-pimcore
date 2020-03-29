@@ -52,12 +52,12 @@ USER pimcore
 WORKDIR /opt/pimcore
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
-    && mv web var /opt/ \
+    && mv web var bin /opt/ \
     && ln -s /opt/vendor /opt/pimcore/vendor \
     && ln -s /opt/pimcore/app /opt/app \
     && ln -s /opt/web /opt/pimcore/web \
     && ln -s /opt/var /opt/pimcore/var \
-    && ln -s /opt/pimcore/bin /opt/bin \
+    && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /home/pimcore/.composer
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
