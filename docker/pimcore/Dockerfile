@@ -6,7 +6,7 @@ ARG S6_OVERLAY_VERSION=v1.22.1.0
 ARG SKELETON_TAG=v2.5.3
 ENV DEBIAN_FRONTEND=noninteractive
 ADD files.tar /
-RUN cp /etc/skel/.bashrc /root/.bashrc && \
+RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     apt-get update -qqy && apt-get upgrade -qqy \
     && apt-get install -qqy apt-utils \
     && apt-get install -qqy --no-install-recommends \
@@ -43,7 +43,7 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
 RUN useradd -ms /bin/bash pimcore \
-    && cp /etc/skel/.bashrc /home/pimcore/.bashrc \
+    && cp /etc/skel/.bashrc /etc/skel/.bash_aliases /home/pimcore/ \
     && usermod -a -G www-data pimcore \
     && mkdir -p /opt/pimcore /opt/vendor /opt/var /opt/web /opt/var \
     && chown -R pimcore:pimcore /opt/ /home/pimcore/.bashrc \
