@@ -17,6 +17,16 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         busybox \
         git-core \
         ca-certificates \
+        composer \
+        mariadb-client \
+        graphicsmagick \
+        graphviz \
+        locales \
+        language-pack-de \
+        libgv-php7 \
+        libreoffice \
+        inkscape \
+        poppler-utils \
         php-fpm \
         php-zip \
         php-gd \
@@ -27,17 +37,12 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         php-mysql \
         php-intl \
         php-opcache \
-        composer \
-        mariadb-client \
-        graphicsmagick \
-        graphviz \
-        locales \
-        language-pack-de
+        php-imagick \
+        php-redis \
+        nginx-extras
 RUN locale-gen en_US.UTF-8 \
-    && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime \
-    && sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.ini
+    && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
-RUN apt-get install -qqy --no-install-recommends nginx-extras
 RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-amd64.tar.gz \
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
@@ -65,6 +70,8 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,targ
     && rm /home/pimcore/.composer/auth.json
 USER root
 RUN chown -R www-data:www-data /opt/web /opt/var
+RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.ini \
+    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.3/fpm/php.ini
 ADD s6/etc/services.d /etc/services.d
 ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]
