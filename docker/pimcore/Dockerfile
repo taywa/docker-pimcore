@@ -80,6 +80,13 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /home/pimcore/.composer
+# base skeleton install
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer install \
+    && rm /home/pimcore/.composer/auth.json
+# add data hub
+COPY ./composer/01/composer.* /opt/pimcore/
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
