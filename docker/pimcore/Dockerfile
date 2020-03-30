@@ -47,12 +47,28 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
+RUN apt-get install -qqy --no-install-recommends \
+        acl \
+        ffmpeg \
+        html2text \
+        ghostscript \
+        pngcrush \
+        jpegoptim \
+        exiftool \
+        opencv-data \
+        php-bcmath \
+        php-bz2 \
+        php-soap \
+        php-xmlrpc \
+        php-fileinfo \
+        php-exif
 RUN useradd -ms /bin/bash pimcore \
     && cp /etc/skel/.bashrc /etc/skel/.bash_aliases /home/pimcore/ \
-    && usermod -a -G www-data pimcore \
-    && mkdir -p /opt/pimcore /opt/vendor /opt/var /opt/web /opt/var \
+    && mkdir -p /opt/pimcore /opt/vendor /opt/var /opt/web \
     && chown -R pimcore:pimcore /opt/ /home/pimcore/.bashrc \
-    && chown -R www-data:www-data /opt/web /opt/var
+    && chown -R pimcore:www-data /opt/vendor \
+    && setfacl -dR -m u:www-data:rwX -m u:pimcore:rwX /opt/var /opt/web \
+    && setfacl -R -m u:www-data:rwX  -m u:pimcore:rwX /opt/var /opt/web
 USER pimcore
 WORKDIR /opt/pimcore
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
@@ -69,11 +85,9 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,targ
     && composer install \
     && rm /home/pimcore/.composer/auth.json
 USER root
-RUN chown -R www-data:www-data /opt/web /opt/var
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.3/fpm/php.ini
 ADD s6/etc/services.d /etc/services.d
 ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]
-
 EXPOSE 8081
