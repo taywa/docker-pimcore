@@ -9,7 +9,7 @@
   "require": {
     "php": ">=7.2",
     "pimcore/data-hub": "dev-master",
-    "pimcore/pimcore": "~6.5.0",
+    "pimcore/pimcore": "~6.6.0",
     "wikimedia/composer-merge-plugin": "^1.4"
   },
   "require-dev": {
@@ -18,7 +18,9 @@
   },
   "autoload": {
     "psr-4": {
-      "": ["src/"],
+      "": [
+        "src/"
+      ],
       "Pimcore\\Model\\DataObject\\": "var/classes/DataObject",
       "Pimcore\\Model\\Object\\": "var/classes/Object",
       "Website\\": "legacy/website/lib"
@@ -31,12 +33,6 @@
     "post-create-project-cmd": "Pimcore\\Composer::postCreateProject",
     "post-install-cmd": [
       "Pimcore\\Composer::postInstall",
-      "@pimcore-scripts"
-    ],
-    "post-update-cmd": [
-      "Pimcore\\Composer::postUpdate",
-      "@pimcore-scripts",
-      "Pimcore\\Composer::executeMigrationsUp",
       "@pimcore-scripts"
     ],
     "pimcore-scripts": [

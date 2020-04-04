@@ -1,1 +1,16 @@
 #!/usr/bin/with-contenv sh
+
+START_NGINX=${START_NGINX:-NO}
+if [ "$START_NGINX" = "YES" ]; then
+    rm /etc/services.d/nginx/down
+fi
+
+START_CRON=${START_CRON:-NO}
+if [ "$START_CRON" = "YES" ]; then
+    rm /etc/services.d/cron/down
+fi
+
+START_PHP_FPM=${START_PHP_FPM:-NO}
+if [ "$START_PHP_FPM" = "YES" ]; then
+    rm /etc/services.d/php-fpm/down
+fi
