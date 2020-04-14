@@ -112,6 +112,9 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.3/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.3/fpm/php.ini
+# EXTRA SOFTWARE LAYER merge on base image update
+RUN apt-get install -qqy --no-install-recommends \
+        openjdk-11-jre-headless
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
 ADD s6/etc/services.d /etc/services.d
