@@ -1,4 +1,4 @@
-PIMCORE_DOCKER=0.3.0
+PIMCORE_DOCKER=0.3.1
 
 build:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
