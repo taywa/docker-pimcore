@@ -79,8 +79,8 @@ RUN useradd -ms /bin/bash pimcore \
     && setfacl -R -m u:www-data:rwX  -m u:pimcore:rwX /opt/var /opt/web
 USER pimcore
 WORKDIR /opt/pimcore
-# v2.6.0 Pimcore 6.6.0
-ARG SKELETON_TAG=v2.6.0
+# v2.6.1 Pimcore 6.6.1
+ARG SKELETON_TAG=v2.6.1
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -113,7 +113,7 @@ RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.3/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.3/fpm/php.ini
 # EXTRA SOFTWARE LAYER merge on base image update
-RUN apt-get install -qqy --no-install-recommends \
+RUN apt-get update -qqy && apt-get install -qqy --no-install-recommends \
         openjdk-11-jre-headless
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
