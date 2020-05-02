@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 # ARGS S6_OVERLAY_VERSION, SKELETON_TAG
@@ -52,7 +52,9 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         php-soap \
         php-xmlrpc \
         php-fileinfo \
-        php-exif
+        php-exif \
+        openjdk-11-jre-headless \
+        openssh-server
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
@@ -79,8 +81,8 @@ RUN useradd -ms /bin/bash pimcore \
     && setfacl -R -m u:www-data:rwX  -m u:pimcore:rwX /opt/var /opt/web
 USER pimcore
 WORKDIR /opt/pimcore
-# v2.6.1 Pimcore 6.6.1
-ARG SKELETON_TAG=v2.6.1
+# v2.6.2 Pimcore 6.6.2
+ARG SKELETON_TAG=v2.6.2
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -98,23 +100,23 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,targ
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /home/pimcore/.composer/auth.json
-# ADD DATA HUB
+# ADD DATA HUB BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/data-hub:dev-master \
+    && composer require pimcore/data-hub:v0.6.1 \
     && rm /home/pimcore/.composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
     && rm composer.jq.json
+RUN cp composer.json composer.lock /opt/ \
+    && cp composer.json /opt/composer.orig.json \
+    && cp composer.lock /opt/composer.orig.lock
 USER root
 ENV COMPOSER_MEMORY_LIMIT=-1
-RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.3/fpm/php.ini \
-    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.3/fpm/php.ini \
-    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.3/fpm/php.ini
-# EXTRA SOFTWARE LAYER merge on base image update
-RUN apt-get update -qqy && apt-get install -qqy --no-install-recommends \
-        openjdk-11-jre-headless
+RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.ini \
+    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.4/fpm/php.ini \
+    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.4/fpm/php.ini
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
 ADD s6/etc/services.d /etc/services.d
