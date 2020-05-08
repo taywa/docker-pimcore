@@ -89,10 +89,11 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /root/.composer
+ENV COMPOSER_MEMORY_LIMIT=-1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && COMPOSER_MEMORY_LIMIT=-1 composer install \
+    && composer install \
     && rm /root/.composer/auth.json
 # ADD DATA HUB BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
@@ -102,7 +103,7 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
 # ADD DATA-DEFINITIONS BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && COMPOSER_MEMORY_LIMIT=-1 composer require w-vision/data-definitions:^3.0 \
+    && composer require w-vision/data-definitions:^3.0 \
     && rm /root/.composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
@@ -111,7 +112,6 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
-ENV COMPOSER_MEMORY_LIMIT=-1
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.4/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.4/fpm/php.ini
