@@ -97,7 +97,7 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
 # ADD DATA HUB BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && COMPOSER_MEMORY_LIMIT=-1 composer require pimcore/data-hub:v0.6.1 \
+    && composer require pimcore/data-hub:dev-master \
     && rm /root/.composer/auth.json
 # ADD DATA-DEFINITIONS BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
