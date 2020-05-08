@@ -75,8 +75,8 @@ RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
     && setfacl -dR -m u:www-data:rwX /opt/var /opt/web \
     && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 WORKDIR /opt/pimcore
-# v2.6.2 Pimcore 6.6.2
-ARG SKELETON_TAG=v2.6.2
+# v2.6.3 Pimcore 6.6.3
+ARG SKELETON_TAG=v2.6.3
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -88,22 +88,22 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/web /opt/pimcore/web \
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
-    && mkdir -p /home/pimcore/.composer
+    && mkdir -p /root/.composer
 # BASE SKELETON INSTALL
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && COMPOSER_MEMORY_LIMIT=-1 composer install \
-    && rm /home/pimcore/.composer/auth.json
+    && rm /root/.composer/auth.json
 # ADD DATA HUB BUNDLE
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && COMPOSER_MEMORY_LIMIT=-1 composer require pimcore/data-hub:v0.6.1 \
-    && rm /home/pimcore/.composer/auth.json
+    && rm /root/.composer/auth.json
 # ADD DATA-DEFINITIONS BUNDLE
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && COMPOSER_MEMORY_LIMIT=-1 composer require w-vision/data-definitions:^3.0 \
-    && rm /home/pimcore/.composer/auth.json
+    && rm /root/.composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
