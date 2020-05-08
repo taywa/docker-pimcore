@@ -53,8 +53,7 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         php-xmlrpc \
         php-fileinfo \
         php-exif \
-        openjdk-11-jre-headless \
-        openssh-server
+        openjdk-11-jre-headless
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
