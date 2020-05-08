@@ -72,14 +72,9 @@ RUN curl -Ls -o /usr/local/bin/zopflipng https://github.com/imagemin/zopflipng-b
 && chmod 0755 /usr/local/bin/advpng \
 && curl -Ls -o /usr/local/bin/cjpeg https://github.com/imagemin/mozjpeg-bin/raw/master/vendor/linux/cjpeg \
 && chmod 0755 /usr/local/bin/cjpeg
-RUN useradd -ms /bin/bash pimcore \
-    && cp /etc/skel/.bashrc /etc/skel/.bash_aliases /home/pimcore/ \
-    && mkdir -p /opt/pimcore /opt/vendor /opt/web \
-    && chown -R pimcore:pimcore /opt/ /home/pimcore/.bashrc \
-    && chown -R pimcore:www-data /opt/vendor \
-    && setfacl -dR -m u:www-data:rwX -m u:pimcore:rwX /opt/var /opt/web \
-    && setfacl -R -m u:www-data:rwX  -m u:pimcore:rwX /opt/var /opt/web
-USER pimcore
+RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
+    && setfacl -dR -m u:www-data:rwX /opt/var /opt/web \
+    && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 WORKDIR /opt/pimcore
 # v2.6.2 Pimcore 6.6.2
 ARG SKELETON_TAG=v2.6.2
@@ -117,7 +112,6 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
-USER root
 ENV COMPOSER_MEMORY_LIMIT=-1
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.4/fpm/php.ini \
