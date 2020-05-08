@@ -93,17 +93,17 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer install \
+    && COMPOSER_MEMORY_LIMIT=-1 composer install \
     && rm /home/pimcore/.composer/auth.json
 # ADD DATA HUB BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/data-hub:v0.6.1 \
+    && COMPOSER_MEMORY_LIMIT=-1 composer require pimcore/data-hub:v0.6.1 \
     && rm /home/pimcore/.composer/auth.json
 # ADD DATA-DEFINITIONS BUNDLE
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=1000 --mount=type=cache,uid=1000,target=/home/pimcore/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require w-vision/data-definitions:^3.0 \
+    && COMPOSER_MEMORY_LIMIT=-1 composer require w-vision/data-definitions:^3.0 \
     && rm /home/pimcore/.composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
