@@ -75,8 +75,8 @@ RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
     && setfacl -dR -m u:www-data:rwX /opt/var /opt/web \
     && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 WORKDIR /opt/pimcore
-# v2.6.3 Pimcore 6.6.3
-ARG SKELETON_TAG=v2.6.3
+ARG SKELETON_TAG=v2.6.2
+ARG PIMCORE_VERSION=6.6.2
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -89,6 +89,7 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /root/.composer
+RUN sed -i -e "s#pimcore\": \"~6.6.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
