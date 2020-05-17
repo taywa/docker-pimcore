@@ -114,6 +114,9 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
+RUN apt-get update -qqy \
+    && apt-get install -qqy --no-install-recommends openssh-server \
+    && rm /etc/ssh/ssh_host_*
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.4/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.4/fpm/php.ini

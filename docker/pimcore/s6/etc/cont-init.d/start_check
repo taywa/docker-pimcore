@@ -14,3 +14,8 @@ START_PHP_FPM=${START_PHP_FPM:-NO}
 if [ "$START_PHP_FPM" = "YES" ]; then
     rm /etc/services.d/php-fpm/down
 fi
+
+START_SSH=${START_SSH:-NO}
+if [ "$START_SSH" = "YES" ]; then
+    rm /etc/services.d/ssh/down
+fi
