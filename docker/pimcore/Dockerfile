@@ -122,6 +122,7 @@ RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.4/fpm/php.ini
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
+ADD files-01/fpm/pool.d /etc/php/7.4/fpm/pool.d
 ADD s6/etc/services.d /etc/services.d
 ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]
