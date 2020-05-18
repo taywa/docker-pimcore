@@ -98,14 +98,16 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     && composer install \
     && rm /root/.composer/auth.json
 # ADD DATA HUB BUNDLE
+ARG DATAHUB_VERSION=0.6.2
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/data-hub:dev-master \
+    && composer require pimcore/data-hub:$DATAHUB_VERSION \
     && rm /root/.composer/auth.json
 # ADD DATA-DEFINITIONS BUNDLE
+ARG DATADEFINITIONS_VERSION=3.0.5
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require w-vision/data-definitions:^3.0 \
+    && composer require w-vision/data-definitions:$DATADEFINITIONS_VERSION \
     && rm /root/.composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
