@@ -97,19 +97,8 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.composer/auth.json
-RUN apt-get install -qqy --no-install-recommends silversearcher-ag
-# ADD DATA HUB BUNDLE
-ARG DATAHUB_VERSION=0.6.2
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/data-hub:$DATAHUB_VERSION \
-    && rm /root/.composer/auth.json
-# ADD DATA-DEFINITIONS BUNDLE
-ARG DATADEFINITIONS_VERSION=3.0.5
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require w-vision/data-definitions:$DATADEFINITIONS_VERSION \
-    && rm /root/.composer/auth.json
+# some extra software
+RUN apt-get install -qqy --no-install-recommends silversearcher-ag lftp php-xdebug openssh-server
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
