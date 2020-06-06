@@ -76,8 +76,8 @@ RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
     && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 RUN apt-get install -qqy --no-install-recommends zip unzip php-pclzip
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.6.4
-ARG PIMCORE_VERSION=6.6.4
+ARG SKELETON_TAG=v2.6.5
+ARG PIMCORE_VERSION=6.6.5
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
