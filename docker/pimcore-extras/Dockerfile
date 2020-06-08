@@ -6,6 +6,7 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 
 # ADD DATA HUB BUNDLE
 ARG DATAHUB_VERSION=0.6.2
+ARG BLOCK_TYPE_VERSION=d4375239cadd70ee24b5dc086b9e32965987732e
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require pimcore/data-hub:$DATAHUB_VERSION \

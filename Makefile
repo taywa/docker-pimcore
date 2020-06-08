@@ -1,5 +1,5 @@
-PIMCORE_DOCKER=6.6.4a
-PIMCORE_EXTRAS_DOCKER=6.6.4a
+PIMCORE_DOCKER=6.6.4b
+PIMCORE_EXTRAS_DOCKER=6.6.4b
 
 build:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
@@ -14,6 +14,7 @@ push:
 build-extras:
 	cd docker && DOCKER_BUILDKIT=1 docker build --secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN -t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) pimcore-extras
 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
+
 
 push-extras:
 	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)
