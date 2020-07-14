@@ -17,3 +17,8 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require pimcore/data-hub:$DATAHUB_VERSION \
     && rm /root/.composer/auth.json
+
+RUN apt-get update && apt-get install -qqy --no-install-recommends \
+    graphicsmagick \
+    inkscape \
+    php-gd
