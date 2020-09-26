@@ -15,6 +15,7 @@ build-extras:
 	cd docker && DOCKER_BUILDKIT=1 docker build --secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN -t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) pimcore-extras
 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
 
+
 push-extras:
 	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)
 	docker push taywa/pimcore-extras:latest
