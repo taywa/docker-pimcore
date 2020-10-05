@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM taywa/pimcore:6.6.5
+FROM taywa/pimcore:6.7.2
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
@@ -18,7 +18,15 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     && composer require pimcore/data-hub:$DATAHUB_VERSION \
     && rm /root/.composer/auth.json
 
-RUN apt-get update && apt-get install -qqy --no-install-recommends \
-    graphicsmagick \
-    inkscape \
-    php-gd
+# ADD TRANSLATION LIBS
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require aws/aws-sdk-php "3.155.1" \
+    && composer require pimcore/data-hub "v0.6.3" \
+    && composer require babymarkt/deepl-php-lib "v1.1.0" \
+    && rm /root/.composer/auth.json
+
+#    && composer require w-vision/data-definitions "3.2.0" \
+#    && composer require pimcore/data-hub "v0.6.3" \
+
+RUN apt-get install -qqy wget imagemagick moreutils
