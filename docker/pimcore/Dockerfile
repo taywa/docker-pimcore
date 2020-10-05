@@ -60,7 +60,9 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         openjdk-11-jre-headless \
         graphicsmagick \
         inkscape \
-        php-gd
+        php-gd \
+        imagemagick \
+        moreutils
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
@@ -82,8 +84,8 @@ RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
     && setfacl -dR -m u:www-data:rwX /opt/var /opt/web \
     && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.7.2
-ARG PIMCORE_VERSION=6.7.2
+ARG SKELETON_TAG=v2.7.3
+ARG PIMCORE_VERSION=6.7.3
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \

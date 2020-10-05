@@ -1,5 +1,5 @@
-PIMCORE_DOCKER=6.7.2
-PIMCORE_EXTRAS_DOCKER=6.7.2b
+PIMCORE_DOCKER=6.7.3
+PIMCORE_EXTRAS_DOCKER=6.7.3
 
 build:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
