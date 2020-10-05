@@ -57,7 +57,10 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         zip unzip \
         ssmtp \
         rsync \
-        openjdk-11-jre-headless
+        openjdk-11-jre-headless \
+        graphicsmagick \
+        inkscape \
+        php-gd
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
@@ -79,8 +82,8 @@ RUN mkdir -p /opt/pimcore /opt/vendor /opt/web \
     && setfacl -dR -m u:www-data:rwX /opt/var /opt/web \
     && setfacl -R -m u:www-data:rwX /opt/var /opt/web
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.6.5
-ARG PIMCORE_VERSION=6.6.5
+ARG SKELETON_TAG=v2.7.2
+ARG PIMCORE_VERSION=6.7.2
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -93,7 +96,7 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /root/.composer
-RUN sed -i -e "s#pimcore\": \"~6.6.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
+RUN sed -i -e "s#pimcore\": \"~6.7.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
