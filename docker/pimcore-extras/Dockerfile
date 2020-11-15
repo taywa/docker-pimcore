@@ -1,30 +1,33 @@
 # syntax=docker/dockerfile:experimental
-FROM taywa/pimcore:6.7.3
+FROM taywa/pimcore:6.8.4
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
 
 # ADD DATA-DEFINITIONS BUNDLE
-ARG DATADEFINITIONS_VERSION=3.0.5
+ARG DATADEFINITIONS_VERSION=3.2.1
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require w-vision/data-definitions:$DATADEFINITIONS_VERSION \
-    && rm /root/.composer/auth.json
+    && rm /root/.config/composer/auth.json
 
 # ADD DATA HUB BUNDLE
 ARG DATAHUB_VERSION=0.6.3
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require pimcore/data-hub:$DATAHUB_VERSION \
-    && rm /root/.composer/auth.json
+    && rm /root/.config/composer/auth.json
 
 # ADD TRANSLATION LIBS
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require aws/aws-sdk-php "3.155.1" \
     && composer require babymarkt/deepl-php-lib "v1.1.0" \
-    && rm /root/.composer/auth.json
+    && rm /root/.config/composer/auth.json
 
-#    && composer require w-vision/data-definitions "3.2.0" \
-#    && composer require pimcore/data-hub "v0.6.3" \
-#    && composer require pimcore/data-hub "v0.6.3" \
+# ADD CORESHOP-MENU BUNDLE
+ARG CORESHOP_MENUD_VERSION=2.2.6
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require coreshop/menu-bundle:$CORESHOP_MENUD_VERSION \
+    && rm /root/.config/composer/auth.json
