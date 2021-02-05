@@ -206,8 +206,8 @@ RUN curl -Ls -o /usr/local/bin/zopflipng https://github.com/imagemin/zopflipng-b
 && npm install -g sqip
 RUN mkdir -p /opt/pimcore /opt/vendor /opt/web
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.8.10
-ARG PIMCORE_VERSION=6.8.7
+ARG SKELETON_TAG=v2.8.11
+ARG PIMCORE_VERSION=6.8.8
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
