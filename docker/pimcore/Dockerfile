@@ -88,8 +88,8 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
 # image layer
-ENV IMAGEMAGICK_VERSION=7.0.10-37
-RUN apt-get install -qqy --no-install-recommends \
+ENV IMAGEMAGICK_VERSION=7.0.10-61
+RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libwebp6 \
         libopenjp2-7 \
         librsvg2-2 \
@@ -152,7 +152,7 @@ RUN apt-get install -qqy --no-install-recommends \
         libxslt1-dev \
         libzip-dev \
         zlib1g-dev \
-    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/7.0.10-37.tar.gz \
+    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
     && cd /usr/local/src && tar xf ImageMagick.tar.gz \
     && cd ImageMagick-$IMAGEMAGICK_VERSION \
     && ./configure \
@@ -206,8 +206,8 @@ RUN curl -Ls -o /usr/local/bin/zopflipng https://github.com/imagemin/zopflipng-b
 && npm install -g sqip
 RUN mkdir -p /opt/pimcore /opt/vendor /opt/web
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.8.7
-ARG PIMCORE_VERSION=6.8.4
+ARG SKELETON_TAG=v2.8.10
+ARG PIMCORE_VERSION=6.8.7
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
