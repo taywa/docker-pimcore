@@ -66,7 +66,6 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         graphicsmagick \
         inkscape \
         php-gd \
-        imagemagick \
         moreutils \
         silversearcher-ag \
         lftp \
@@ -82,13 +81,13 @@ RUN cd /usr/local/bin \
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
-ARG S6_OVERLAY_VERSION=v2.1.0.2
+ARG S6_OVERLAY_VERSION=v2.2.0.3
 RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-amd64.tar.gz \
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
 # image layer
-ENV IMAGEMAGICK_VERSION=7.0.10-61
+ENV IMAGEMAGICK_VERSION=7.1.0-7
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libwebp6 \
         libopenjp2-7 \
@@ -206,8 +205,8 @@ RUN curl -Ls -o /usr/local/bin/zopflipng https://github.com/imagemin/zopflipng-b
 && npm install -g sqip
 RUN mkdir -p /opt/pimcore /opt/vendor /opt/web
 WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.8.11
-ARG PIMCORE_VERSION=6.8.8
+ARG SKELETON_TAG=v2.8.22
+ARG PIMCORE_VERSION=6.9.6
 RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
     && rm -Rf .git \
     && mv web var bin /opt/ \
@@ -220,7 +219,7 @@ RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skelet
     && ln -s /opt/var /opt/pimcore/var \
     && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /root/.composer
-RUN sed -i -e "s#pimcore\": \"~6.8.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
+RUN sed -i -e "s#pimcore\": \"~6.9.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
