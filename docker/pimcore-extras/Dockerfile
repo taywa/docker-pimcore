@@ -31,3 +31,9 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     && composer require aws/aws-sdk-php "3.193.2" \
     && composer require babymarkt/deepl-php-lib "v3.0.1" \
     && rm /root/.config/composer/auth.json
+
+# ADD PHP JWT
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require firebase/php-jwt "v5.4.0" \
+    && rm /root/.config/composer/auth.json
