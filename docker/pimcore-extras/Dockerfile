@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM taywa/pimcore:6.9.6a
+FROM taywa/pimcore:6.9.6b
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
