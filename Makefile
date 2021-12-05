@@ -29,9 +29,9 @@ build-push:
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
 	rm docker/pimcore/files.tar
 
-push:
-	docker push taywa/pimcore:$(PIMCORE_DOCKER)
-	docker push taywa/pimcore:latest
+push-arch:
+	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
+	docker push taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 
 build-extras-arch:
 	cd docker && DOCKER_BUILDKIT=1 \
@@ -55,3 +55,7 @@ build-extras-push:
 		--build-arg BUILDKIT_INLINE_CACHE=1 -t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) \
 		pimcore-extras
 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
+
+push-extras-arch:
+	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
+	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
