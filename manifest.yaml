@@ -1,0 +1,10 @@
+image: taywa/pimcore:6.9.6b
+manifests:
+  - image: taywa/pimcore:6.9.6b-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: taywa/pimcore:6.9.6b-arm64
+    platform:
+      architecture: arm64
+      os: linux

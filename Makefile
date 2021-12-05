@@ -59,3 +59,9 @@ build-extras-push:
 push-extras-arch:
 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
+
+push-manifest:
+	manifest-tool --debug push from-spec manifest.yaml
+
+push-extras-manifest:
+	manifest-tool --debug push from-spec manifest-extras.yaml
