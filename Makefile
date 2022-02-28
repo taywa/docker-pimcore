@@ -10,7 +10,8 @@ build-arch:
 		--load \
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
-		--build-arg BUILDKIT_INLINE_CACHE=1 -t taywa/pimcore:$(PIMCORE_DOCKER) \
+		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		-t taywa/pimcore:$(PIMCORE_DOCKER) \
 		pimcore
 		# --cache-from taywa/pimcore:$(PIMCORE_DOCKER_PREV) \
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
@@ -23,7 +24,8 @@ build-push:
 		--push \
 		--platform linux/arm64,linux/amd64 \
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
-		--build-arg BUILDKIT_INLINE_CACHE=1 -t taywa/pimcore:$(PIMCORE_DOCKER) \
+		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		-t taywa/pimcore:$(PIMCORE_DOCKER) \
 		pimcore
 		# --cache-from taywa/pimcore:$(PIMCORE_DOCKER_PREV) \
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest

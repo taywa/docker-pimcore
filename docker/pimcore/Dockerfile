@@ -6,66 +6,65 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     apt-get update -qqy && apt-get upgrade -qqy \
     && apt-get install -qqy apt-utils \
     && apt-get install -qqy --no-install-recommends \
-        curl \
         acl \
-        sudo \
-        make \
-        python3-pip \
-        cmake \
-        unzip \
-        cron \
-        jq \
-        nasm \
         busybox \
-        git-core \
         ca-certificates \
-        mariadb-client \
-        graphviz \
-        locales \
-        language-pack-de \
-        libgv-php7 \
-        poppler-utils \
-        nginx-extras \
-        html2text \
-        ghostscript \
-        pngcrush \
-        jpegoptim \
+        cmake \
+        cron \
+        curl \
         exiftool \
+        ghostscript \
+        git-core \
+        graphicsmagick \
+        graphviz \
+        html2text \
+        jpegoptim \
+        jq \
+        language-pack-de \
+        lftp \
+        libgv-php7 \
+        locales \
+        make \
+        mariadb-client \
+        moreutils \
+        nasm \
+        nginx-extras \
         opencv-data \
-        php-gd \
-        php-fpm \
-        php-zip \
-        php-curl \
-        php-cli \
-        php-mbstring \
-        php-xml \
-        php-mysql \
-        php-intl \
-        php-opcache \
-        php-imagick \
-        php-redis \
+        openjdk-11-jre-headless \
+        openssh-server \
         php-apcu \
         php-bcmath \
         php-bz2 \
-        php-soap \
-        php-xmlrpc \
-        php-fileinfo \
+        php-cli \
+        php-curl \
+        php-dev \
         php-exif \
+        php-fileinfo \
+        php-fpm \
+        php-gd \
+        php-gd \
+        php-intl \
+        php-mbstring \
+        php-mysql \
+        php-opcache \
         php-pclzip \
         php-pear \
-        php-dev \
+        php-redis \
+        php-soap \
         php-xdebug \
+        php-xml \
+        php-xmlrpc \
+        php-zip \
+        pngcrush \
+        poppler-utils \
+        python3-pip \
+        rsync \
+        silversearcher-ag \
+        ssmtp \
+        sudo \
+        unzip \
         xz-utils \
         zip unzip \
-        ssmtp \
-        rsync \
-        openjdk-11-jre-headless \
-        graphicsmagick \
-        php-gd \
-        moreutils \
-        silversearcher-ag \
-        lftp \
-        openssh-server \
     && rm /etc/ssh/ssh_host_*
 RUN cd /usr/local/bin \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -85,17 +84,15 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
 # image layer
 ENV IMAGEMAGICK_VERSION=7.1.0-26
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
-        facedetect \
-        zopfli \
-        libwebp6 \
-        libopenjp2-7 \
-        librsvg2-2 \
-        libde265-0 \
         bzip2 \
+        facedetect \
+        gsfonts \
+        libde265-0 \
         libdjvulibre21 \
         libfftw3-bin \
         libfontconfig1 \
         libfreetype6 \
+        libheif1 \
         libicu67 \
         libjpeg-turbo8 \
         liblcms2-2 \
@@ -105,30 +102,33 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libonig5 \
         libopenexr25 \
         libopenjp2-7 \
+        libopenjp2-7 \
         libpango-1.0-0 \
         libpng16-16 \
         librsvg2-2 \
+        librsvg2-2 \
         libtiff5 \
+        libwebp6 \
         libwmf0.2-7 \
         libxml2 \
         libxpm4 \
         libxslt1.1 \
         libzip4 \
-        zlib1g \
         netpbm \
-        gsfonts
+        optipng \
+        pngquant \
+        zlib1g \
+        zopfli
 RUN apt-get install -qqy --no-install-recommends \
         build-essential \
         checkinstall \
-        libwebp-dev \
-        libopenjp2-7-dev \
-        librsvg2-dev \
-        libde265-dev \
         libbz2-dev \
+        libde265-dev \
         libdjvulibre-dev \
         libfftw3-dev \
         libfontconfig1-dev \
         libfreetype6-dev \
+        libheif-dev \
         libicu-dev \
         libjpeg-turbo8-dev \
         liblcms2-dev \
@@ -138,36 +138,39 @@ RUN apt-get install -qqy --no-install-recommends \
         libonig-dev \
         libopenexr-dev \
         libopenjp2-7-dev \
+        libopenjp2-7-dev \
         libpango1.0-dev \
         libpng-dev \
         librsvg2-dev \
+        librsvg2-dev \
         libtiff5-dev \
+        libwebp-dev \
         libwebp-dev \
         libwmf-dev \
         libxml2-dev \
         libxpm-dev \
         libxslt1-dev \
         libzip-dev \
-        zlib1g-dev \
-    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
+        zlib1g-dev
+RUN curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
     && cd /usr/local/src && tar xf ImageMagick.tar.gz \
     && cd ImageMagick-$IMAGEMAGICK_VERSION \
     && ./configure \
     && make && make install \
-    && pecl install imagick \
-    && echo "extension=imagick.so" > /etc/php/8.1/fpm/conf.d/30-imagick.ini \
+    && ldconfig /usr/local/lib
+RUN pear config-set php_ini /etc/php/8.1/fpm/php.ini \
+    && yes ''|pecl install imagick \
+    && rm -Rf /usr/local/src/ImageMagick* \
     && apt-get remove --purge -qqy \
         build-essential \
         checkinstall \
-        libwebp-dev \
-        libopenjp2-7-dev \
-        librsvg2-dev \
-        libde265-dev \
         libbz2-dev \
+        libde265-dev \
         libdjvulibre-dev \
         libfftw3-dev \
         libfontconfig1-dev \
         libfreetype6-dev \
+        libheif-dev \
         libicu-dev \
         libjpeg-turbo8-dev \
         liblcms2-dev \
@@ -177,10 +180,13 @@ RUN apt-get install -qqy --no-install-recommends \
         libonig-dev \
         libopenexr-dev \
         libopenjp2-7-dev \
+        libopenjp2-7-dev \
         libpango1.0-dev \
         libpng-dev \
         librsvg2-dev \
+        librsvg2-dev \
         libtiff5-dev \
+        libwebp-dev \
         libwebp-dev \
         libwmf-dev \
         libxml2-dev \
@@ -188,18 +194,11 @@ RUN apt-get install -qqy --no-install-recommends \
         libxslt1-dev \
         libzip-dev \
         zlib1g-dev \
-    && rm -Rf /usr/local/src/ImageMagick* \
-    && ldconfig /usr/local/lib \
     && apt-get autoremove -y --purge
-
 # EXTRA THUMBNAIL APPS
 RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
-
-# EXTRA IMAGE OPTIMIZER LAYER
-RUN curl -Ls -o /usr/local/bin/pngout https://github.com/imagemin/pngout-bin/raw/master/vendor/linux/x64/pngout \
-&& chmod 0755 /usr/local/bin/*
 ARG SKELETON_TAG=v10.1.9
 ARG PIMCORE_VERSION=10.3.1
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
@@ -209,6 +208,7 @@ RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pim
 WORKDIR /opt/pimcore
 RUN sed -i -e "s#pimcore\": \"^10.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
