@@ -1,2 +1,5 @@
 docker/pimcore/GITHUBTOKEN
 docker/pimcore-extras/GITHUBTOKEN
+var
+config/local
+tmp

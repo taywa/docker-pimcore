@@ -1,10 +1,7 @@
-# syntax=docker/dockerfile:experimental
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
-# ARGS S6_OVERLAY_VERSION, SKELETON_TAG
 ADD files.tar /
-# BASE SOFTWARE LAYER
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     apt-get update -qqy && apt-get upgrade -qqy \
     && apt-get install -qqy apt-utils \
@@ -18,6 +15,7 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         unzip \
         cron \
         jq \
+        nasm \
         busybox \
         git-core \
         ca-certificates \
@@ -26,7 +24,6 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         locales \
         language-pack-de \
         libgv-php7 \
-        libreoffice \
         poppler-utils \
         nginx-extras \
         html2text \
@@ -64,7 +61,6 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         rsync \
         openjdk-11-jre-headless \
         graphicsmagick \
-        inkscape \
         php-gd \
         moreutils \
         silversearcher-ag \
@@ -80,15 +76,17 @@ RUN cd /usr/local/bin \
     && ln -s /usr/local/bin/composer /usr/bin/composer
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
-ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin COMPOSER_VENDOR_DIR=/opt/vendor
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin
 ARG S6_OVERLAY_VERSION=v2.2.0.3
 RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch|sed 's/x86_64/amd64/'`.tar.gz \
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
 # image layer
-ENV IMAGEMAGICK_VERSION=7.1.0-7
+ENV IMAGEMAGICK_VERSION=7.1.0-26
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
+        facedetect \
+        zopfli \
         libwebp6 \
         libopenjp2-7 \
         librsvg2-2 \
@@ -98,14 +96,14 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libfftw3-bin \
         libfontconfig1 \
         libfreetype6 \
-        libicu66 \
+        libicu67 \
         libjpeg-turbo8 \
         liblcms2-2 \
         liblqr-1-0 \
         libltdl7 \
         liblzma5 \
         libonig5 \
-        libopenexr24 \
+        libopenexr25 \
         libopenjp2-7 \
         libpango-1.0-0 \
         libpng16-16 \
@@ -115,7 +113,7 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libxml2 \
         libxpm4 \
         libxslt1.1 \
-        libzip5 \
+        libzip4 \
         zlib1g \
         netpbm \
         gsfonts
@@ -157,7 +155,7 @@ RUN apt-get install -qqy --no-install-recommends \
     && ./configure \
     && make && make install \
     && pecl install imagick \
-    && echo "extension=imagick.so" > /etc/php/7.4/fpm/conf.d/30-imagick.ini || true \
+    && echo "extension=imagick.so" > /etc/php/8.1/fpm/conf.d/30-imagick.ini \
     && apt-get remove --purge -qqy \
         build-essential \
         checkinstall \
@@ -191,39 +189,29 @@ RUN apt-get install -qqy --no-install-recommends \
         libzip-dev \
         zlib1g-dev \
     && rm -Rf /usr/local/src/ImageMagick* \
-    && ldconfig /usr/local/lib
+    && ldconfig /usr/local/lib \
+    && apt-get autoremove -y --purge
+
+# EXTRA THUMBNAIL APPS
+RUN apt-get install -qqy --no-install-recommends \
+        libreoffice \
+        inkscape
 
 # EXTRA IMAGE OPTIMIZER LAYER
-RUN curl -Ls -o /usr/local/bin/zopflipng https://github.com/imagemin/zopflipng-bin/raw/master/vendor/linux/zopflipng \
-&& curl -Ls -o /usr/local/bin/pngout https://github.com/imagemin/pngout-bin/raw/master/vendor/linux/x64/pngout \
-&& curl -Ls -o /usr/local/bin/advpng https://github.com/imagemin/advpng-bin/raw/master/vendor/linux/advpng \
-&& curl -Ls -o /usr/local/bin/cjpeg https://github.com/imagemin/mozjpeg-bin/raw/master/vendor/linux/cjpeg \
-&& curl -Ls -o /usr/local/bin/facedetect  https://raw.githubusercontent.com/wavexx/facedetect/master/facedetect \
-&& chmod 0755 /usr/local/bin/* \
-&& curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-&& apt-get install -y nodejs \
-&& npm install -g sqip
-RUN mkdir -p /opt/pimcore /opt/vendor /opt/web
-WORKDIR /opt/pimcore
-ARG SKELETON_TAG=v2.8.22
-ARG PIMCORE_VERSION=6.9.6
-RUN git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton . \
+RUN curl -Ls -o /usr/local/bin/pngout https://github.com/imagemin/pngout-bin/raw/master/vendor/linux/x64/pngout \
+&& chmod 0755 /usr/local/bin/*
+ARG SKELETON_TAG=v10.1.9
+ARG PIMCORE_VERSION=10.3.1
+RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
+    && cd /opt/pimcore \
     && rm -Rf .git \
-    && mv web var bin /opt/ \
-    && mkdir /opt/pimcore/var_classes /opt/var/classes_DataObject \
-    && ln -s /opt/pimcore/var_classes /opt/var/classes \
-    && ln -s /opt/var/classes_DataObject /opt/pimcore/var_classes/DataObject \
-    && ln -s /opt/vendor /opt/pimcore/vendor \
-    && ln -s /opt/pimcore/app /opt/app \
-    && ln -s /opt/web /opt/pimcore/web \
-    && ln -s /opt/var /opt/pimcore/var \
-    && ln -s /opt/bin /opt/pimcore/bin \
     && mkdir -p /root/.composer
-RUN sed -i -e "s#pimcore\": \"~6.9.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
+WORKDIR /opt/pimcore
+RUN sed -i -e "s#pimcore\": \"^10.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 # BASE SKELETON INSTALL
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.config/composer/auth.json
 # REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
@@ -233,15 +221,15 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
-RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/7.4/fpm/php.ini \
-    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/7.4/fpm/php.ini \
-    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/7.4/fpm/php.ini
+RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
+    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
+    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
 # fix quantity value unit, https://github.com/pimcore/pimcore/pull/9250/files
-ADD patches/0001-8300-Increase-query-column-and-column-format-to-varc.patch /tmp/
-RUN cd /opt/vendor/pimcore/pimcore && git apply /tmp/0001-8300-Increase-query-column-and-column-format-to-varc.patch
+#ADD patches/0001-8300-Increase-query-column-and-column-format-to-varc.patch /tmp/
+#RUN cd /opt/vendor/pimcore/pimcore && git apply /tmp/0001-8300-Increase-query-column-and-column-format-to-varc.patch
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
-ADD files-01/fpm/pool.d /etc/php/7.4/fpm/pool.d
+ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
 ADD s6/etc/services.d /etc/services.d
 ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]

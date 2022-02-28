@@ -1,0 +1,61 @@
+services:
+  pimcore:
+    hostname: pimcore
+    image: taywa/pimcore-extras:10.3.1
+    # image: taywa/pimcore:10.3.1
+    environment:
+      - TERM=xterm-256color
+      - PHP_SMTP_HOST=maildev
+      - START_NGINX=NO
+      - START_CRON=NO
+      - START_PHP_FPM=NO
+      - MAILHUB=maildev
+      - PIMCORE_ENVIRONMENT=dev
+      - PIMCORE_PUBLIC_URL=pimcore.local
+      - PIMCORE_INSTALL_ADMIN_USERNAME=admin
+      - PIMCORE_INSTALL_ADMIN_PASSWORD=admin
+      - PIMCORE_INSTALL_MYSQL_HOST_SOCKET=mariadb
+      - PIMCORE_INSTALL_MYSQL_USERNAME=pimcore
+      - PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore
+      - PIMCORE_INSTALL_MYSQL_DATABASE=pimcore
+    volumes:
+      - ./etc/nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./var/pimcore:/opt/pimcore/var
+      - ./var/pimcore-public-var:/opt/pimcore/public/var
+      - ./config/local:/opt/pimcore/config/local
+    #   - ./etc/php/fpm/pool.d:/etc/php/8.1/fpm/pool.d
+    #   - ./etc/php/php.custom.ini:/etc/php/8.1/fpm/conf.d/php.custom.ini
+    links:
+      - mariadb
+    ports:
+      - '80:80'
+
+  mariadb:
+    hostname: mariadb
+    image: mariadb:10.7
+    volumes:
+      - ./var/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=ROOT
+      - MYSQL_DATABASE=pimcore
+      - MYSQL_USER=pimcore
+      - MYSQL_PASSWORD=pimcore
+    command:
+      [
+        --character-set-server=utf8mb4,
+        --collation-server=utf8mb4_unicode_ci,
+        --innodb-large-prefix=1,
+        --innodb-file-per-table=1
+      ]
+    # log all queries
+    # command: [--general-log=1, --general-log-file=/var/log/mysql/general-log.log, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --innodb-large-prefix=1, --innodb-file-per-table=1]
+
+    ports:
+      - '3306:3306'
+
+  maildev:
+    hostname: maildev
+    image: yvess/alpine-maildev
+    hostname: maildev
+    ports:
+      - '1080:80'
