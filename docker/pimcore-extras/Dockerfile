@@ -44,3 +44,12 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
     && jq '. += {"repositories": [{"type": "vcs", "url": "https://github.com/bgpack/php-units-of-measure", "name": "php-units-of-measure/php-units-of-measure"}]}' composer.json | sponge composer.json \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.12" \
     && rm /root/.config/composer/auth.json
+
+# update/fix layer
+# udpate inkscape
+RUN apt-get -qqy --no-install-recommends install software-properties-common \
+    && add-apt-repository -y ppa:inkscape.dev/stable \
+    && apt-get update \
+    && apt-get -qqy install --no-install-recommends inkscape/stable-1.1
+
+ADD files-00/cron/pimcore /etc/cron.d/
