@@ -1,0 +1,10 @@
+image: taywa/pimcore-extras:6.9.6d
+manifests:
+  - image: taywa/pimcore-extras:6.9.6d-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: taywa/pimcore-extras:6.9.6d-arm64
+    platform:
+      architecture: arm64
+      os: linux
