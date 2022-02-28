@@ -47,18 +47,9 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
 
 # update/fix layer
 # udpate inkscape
-RUN apt-get update \
-    && apt-get install -qqy --no-install-recommends software-properties-common \
-    && add-apt-repository -y ppa:inkscape.dev/stable \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9DA4BD18B9A06DE3 \
+    && echo "deb http://ppa.launchpad.net/inkscape.dev/stable/ubuntu focal main" > /etc/apt/sources.list.d/inkscape_dev-ubuntu-stable-focal.list \
     && apt-get update \
     && apt-get install -qqy --no-install-recommends inkscape \
-    && apt-get remove --purge -y dbus dbus-user-session dconf-gsettings-backend dconf-service \
-        gir1.2-packagekitglib-1.0 glib-networking glib-networking-common glib-networking-services \
-        gsettings-desktop-schemas libappstream4 liblmdb0 libpackagekit-glib2-18 libpam-systemd \
-        libpolkit-agent-1-0 libpolkit-gobject-1-0 libproxy1v5 libsoup2.4-1 libstemmer0d \
-        libyaml-0-2 packagekit policykit-1 python3-apt python3-certifi python3-chardet python3-dbus python3-gi \
-        python3-idna python3-requests python3-requests-unixsocket python3-six python3-software-properties \
-        python3-urllib3 python-apt-common software-properties-common systemd-sysv \
     && apt-get clean
-
 ADD files-00/cron/pimcore /etc/cron.d/
