@@ -64,3 +64,22 @@ push-manifest:
 
 push-extras-manifest:
 	manifest-tool --debug push from-spec manifest-extras.yaml
+
+start:
+	docker-compose exec pimcore s6-svc -u /var/run/s6/services/php-fpm
+	docker-compose exec pimcore s6-svc -u /var/run/s6/services/nginx
+
+fix-permissions:
+	docker-compose exec pimcore chown www-data:www-data /opt/pimcore/var
+	docker-compose exec pimcore sh -c "cd /opt/pimcore/var && chown www-data:www-data -R application-logger cache classes email log tmp config /opt/pimcore/public/var"
+
+install:
+	docker-compose exec pimcore ./vendor/bin/pimcore-install --no-interaction --ignore-existing-config
+
+install-datahub:
+	docker-compose exec pimcore /opt/pimcore/bin/console pimcore:bundle:install PimcoreDataHubBundle
+
+init: install
+
+enter:
+	docker-compose exec pimcore bash
