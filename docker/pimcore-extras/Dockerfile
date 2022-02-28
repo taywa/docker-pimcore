@@ -47,9 +47,18 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/ro
 
 # update/fix layer
 # udpate inkscape
-RUN apt-get -qqy --no-install-recommends install software-properties-common \
+RUN apt-get update \
+    && apt-get install -qqy --no-install-recommends software-properties-common \
     && add-apt-repository -y ppa:inkscape.dev/stable \
     && apt-get update \
-    && apt-get -qqy install --no-install-recommends inkscape/stable-1.1
+    && apt-get install -qqy --no-install-recommends inkscape \
+    && apt-get remove --purge -y dbus dbus-user-session dconf-gsettings-backend:amd64 dconf-service \
+        gir1.2-packagekitglib-1.0 glib-networking:amd64 glib-networking-common glib-networking-services \
+        gsettings-desktop-schemas libappstream4:amd64 liblmdb0:amd64 libpackagekit-glib2-18:amd64 libpam-systemd:amd64 \
+        libpolkit-agent-1-0:amd64 libpolkit-gobject-1-0:amd64 libproxy1v5:amd64 libsoup2.4-1:amd64 libstemmer0d:amd64 \
+        libyaml-0-2:amd64 packagekit policykit-1 python3-apt python3-certifi python3-chardet python3-dbus python3-gi \
+        python3-idna python3-requests python3-requests-unixsocket python3-six python3-software-properties \
+        python3-urllib3 python-apt-common software-properties-common systemd-sysv \
+    && apt-get clean
 
 ADD files-00/cron/pimcore /etc/cron.d/
