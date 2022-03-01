@@ -22,6 +22,7 @@ services:
       - ./etc/nginx/sites-enabled:/etc/nginx/sites-enabled
       - ./var/pimcore:/opt/pimcore/var
       - ./var/pimcore-public-var:/opt/pimcore/public/var
+      - ./var/pimcore-public-bundles:/opt/pimcore/public/bundles
       - ./config/local:/opt/pimcore/config/local
     #   - ./etc/php/fpm/pool.d:/etc/php/8.1/fpm/pool.d
     #   - ./etc/php/php.custom.ini:/etc/php/8.1/fpm/conf.d/php.custom.ini

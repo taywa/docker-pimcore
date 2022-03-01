@@ -78,8 +78,10 @@ fix-permissions:
 install:
 	docker-compose exec pimcore ./vendor/bin/pimcore-install --no-interaction --ignore-existing-config
 
-install-datahub:
-	docker-compose exec pimcore /opt/pimcore/bin/console pimcore:bundle:install PimcoreDataHubBundle
+link-default-bundles:
+	docker-compose exec -w /opt/pimcore/public/bundles pimcore ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/Resources/public/ pimcorecore
+	docker-compose exec -w /opt/pimcore/public/bundles pimcore ln -fs ../../vendor/pimcore/pimcore/bundles/AdminBundle/Resources/public/ pimcoreadmin
+	docker-compose exec -w /opt/pimcore/public/bundles pimcore ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
 
 init: install
 
