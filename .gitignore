@@ -3,3 +3,5 @@ docker/pimcore-extras/GITHUBTOKEN
 var
 config/local
 tmp
+src
+docker-extras.yml
