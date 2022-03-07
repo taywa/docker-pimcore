@@ -27,3 +27,16 @@ if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf"; then
         -e "s#\#FromLineOverride=YES#FromLineOverride=YES${MAILHUB:-localhost}#" \
         /etc/ssmtp/ssmtp.conf
 fi
+
+# make sure that default bundles exist
+cd /opt/pimcore/public/bundles
+ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/Resources/public/ pimcorecore
+ln -fs ../../vendor/pimcore/pimcore/bundles/AdminBundle/Resources/public/ pimcoreadmin
+ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
+
+# make sure permissions are right
+chown www-data:www-data -R /opt/pimcore/var
+chown www-data:www-data -R /opt/pimcore/var/log
+chown www-data:www-data /var/lib/php/sessions
+chown www-data:www-data /opt/pimcore/public/var
+chown www-data:www-data -R /opt/pimcore/public/var

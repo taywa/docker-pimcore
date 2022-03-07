@@ -1,4 +1,4 @@
-FROM taywa/pimcore:10.3.1
+FROM taywa/pimcore:10.3.2
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
