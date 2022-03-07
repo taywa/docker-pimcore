@@ -17,6 +17,8 @@ services:
       - PIMCORE_INSTALL_MYSQL_USERNAME=pimcore
       - PIMCORE_INSTALL_MYSQL_PASSWORD=pimcore
       - PIMCORE_INSTALL_MYSQL_DATABASE=pimcore
+      - PIMCORE_CLASS_DEFINITION_WRITABLE=true
+      - PIMCORE_CLASS_DEFINITION_DIRECTORY=/opt/pimcore/config/pimcore/classes
     volumes:
       - ./etc/nginx/sites-enabled:/etc/nginx/sites-enabled
       - ./var/pimcore:/opt/pimcore/var
