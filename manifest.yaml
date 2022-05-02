@@ -1,10 +1,10 @@
-image: taywa/pimcore:10.3.2
+image: taywa/pimcore:10.3.6
 manifests:
-  - image: taywa/pimcore:10.3.2-amd64
+  - image: taywa/pimcore:10.3.6-amd64
     platform:
       architecture: amd64
       os: linux
-  - image: taywa/pimcore:10.3.2-arm64
+  - image: taywa/pimcore:10.3.6-arm64
     platform:
       architecture: arm64
       os: linux

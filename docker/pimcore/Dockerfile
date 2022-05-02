@@ -198,8 +198,8 @@ RUN pear config-set php_ini /etc/php/8.1/fpm/php.ini \
 RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
-ARG SKELETON_TAG=v10.1.9
-ARG PIMCORE_VERSION=10.3.2
+ARG SKELETON_TAG=v10.1.11
+ARG PIMCORE_VERSION=10.3.6
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
