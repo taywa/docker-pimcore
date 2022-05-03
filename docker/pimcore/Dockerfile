@@ -80,8 +80,7 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
-# image layer
-ENV IMAGEMAGICK_VERSION=7.1.0-26
+ARG IMAGEMAGICK_VERSION=7.1.0-26
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
         bzip2 \
         facedetect \
@@ -150,14 +149,14 @@ RUN apt-get install -qqy --no-install-recommends \
         libxpm-dev \
         libxslt1-dev \
         libzip-dev \
-        zlib1g-dev
-RUN curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
+        zlib1g-dev \
+    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
     && cd /usr/local/src && tar xf ImageMagick.tar.gz \
     && cd ImageMagick-$IMAGEMAGICK_VERSION \
     && ./configure \
     && make && make install \
-    && ldconfig /usr/local/lib
-RUN pear config-set php_ini /etc/php/8.1/fpm/php.ini \
+    && ldconfig /usr/local/lib \
+    && pear config-set php_ini /etc/php/8.1/fpm/php.ini \
     && yes ''|pecl install imagick \
     && rm -Rf /usr/local/src/ImageMagick* \
     && apt-get remove --purge -qqy \
@@ -194,7 +193,7 @@ RUN pear config-set php_ini /etc/php/8.1/fpm/php.ini \
         libzip-dev \
         zlib1g-dev \
     && apt-get autoremove -y --purge
-# EXTRA THUMBNAIL APPS
+RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
@@ -208,13 +207,13 @@ WORKDIR /opt/pimcore
 RUN sed -i -e "s#pimcore\": \"^10.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
-# BASE SKELETON INSTALL
+RUN echo "BASE SKELETON INSTALL"
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.config/composer/auth.json
-# REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS
+RUN echo "REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS"
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
     && rm composer.jq.json
