@@ -92,7 +92,7 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
         libfontconfig1 \
         libfreetype6 \
         libheif1 \
-        libicu67 \
+        libicu70 \
         libjpeg-turbo8 \
         liblcms2-2 \
         liblqr-1-0 \
@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
         librsvg2-2 \
         librsvg2-2 \
         libtiff5 \
-        libwebp6 \
+        libwebp7 \
         libwmf0.2-7 \
         libxml2 \
         libxpm4 \
