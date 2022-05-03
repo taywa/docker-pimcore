@@ -6,9 +6,12 @@ ARCHS=linux/arm64,linux/amd64
 
 build-arch:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
-	cd docker && docker build \
+	cd docker && docker buildx build \
+		--load \
+		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
-		--cache-from taywa/pimcore:$(PIMCORE_DOCKER_PREV) \
+		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		--cache-from taywa/pimcore:latest \
 		-t taywa/pimcore:$(PIMCORE_DOCKER) \
 		pimcore
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
@@ -32,8 +35,11 @@ push-arch:
 	docker push taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 
 build-extras-arch:
-	cd docker && docker build \
+	cd docker && docker buildx build \
+		--load \
+		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore-extras/GITHUBTOKEN \
+		--build-arg BUILDKIT_INLINE_CACHE=1 \
 		--cache-from taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER_PREV) \
 		-t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) \
 		pimcore-extras
