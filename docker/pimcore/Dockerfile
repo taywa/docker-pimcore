@@ -209,7 +209,8 @@ RUN sed -i -e "s#pimcore\": \"^10.0#pimcore\": \"$PIMCORE_VERSION#" composer.jso
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
 # BASE SKELETON INSTALL
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 --mount=type=cache,uid=0,target=/root/.composer/cache \
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.config/composer/auth.json
