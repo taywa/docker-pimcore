@@ -1,5 +1,5 @@
-PIMCORE_DOCKER=10.3.6
-PIMCORE_EXTRAS_DOCKER=10.3.6
+PIMCORE_DOCKER=10.4.3
+PIMCORE_EXTRAS_DOCKER=10.4.3
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
@@ -15,18 +15,19 @@ build-arch:
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
 	rm docker/pimcore/files.tar
 
-# build-push-archs:
-# 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
-# 	cd docker && DOCKER_BUILDKIT=1 docker buildx build \
-# 		--push \
-# 		--platform $(ARCHS) \
-# 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
-# 		--build-arg BUILDKIT_INLINE_CACHE=1 \
-# 		--cache-from taywa/pimcore:$(PIMCORE_DOCKER_PREV) \
-# 		-t taywa/pimcore:$(PIMCORE_DOCKER) \
-# 		pimcore
-# 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
-# 	rm docker/pimcore/files.tar
+build-push-archs:
+	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
+	cd docker && DOCKER_BUILDKIT=1 docker buildx build \
+		--push \
+		--platform $(ARCHS) \
+		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
+		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		--cache-from taywa/pimcore:latest \
+		-t taywa/pimcore:$(PIMCORE_DOCKER) \
+		pimcore
+	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
+	docker push taywa/pimcore:$(PIMCORE_DOCKER)
+	rm docker/pimcore/files.tar
 
 push-arch:
 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
