@@ -1,7 +1,5 @@
 PIMCORE_DOCKER=10.3.6
-PIMCORE_DOCKER_PREV=10.3.2
 PIMCORE_EXTRAS_DOCKER=10.3.6
-PIMCORE_EXTRAS_DOCKER_PREV=10.3.2
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
@@ -40,7 +38,7 @@ build-extras-arch:
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore-extras/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
-		--cache-from taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER_PREV) \
+		--cache-from taywa/pimcore-extras:latest \
 		-t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) \
 		pimcore-extras
 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
