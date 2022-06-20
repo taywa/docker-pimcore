@@ -11,7 +11,7 @@ ENV COMPOSER_MEMORY_LIMIT=-1
 #     && rm /root/.config/composer/auth.json
 
 # ADD DATA HUB BUNDLE
-ARG DATAHUB_VERSION=1.3.1
+ARG DATAHUB_VERSION=1.4.1
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
