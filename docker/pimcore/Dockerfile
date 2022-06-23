@@ -198,7 +198,7 @@ RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
 ARG SKELETON_TAG=v10.1.13
-ARG PIMCORE_VERSION=10.4.3
+ARG PIMCORE_VERSION=10.4.4
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
