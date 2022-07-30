@@ -1,10 +1,10 @@
-image: taywa/pimcore-extras:10.4.5
+image: taywa/pimcore-extras:10.4.5a
 manifests:
-  - image: taywa/pimcore-extras:10.4.5-amd64
+  - image: taywa/pimcore-extras:10.4.5a-amd64
     platform:
       architecture: amd64
       os: linux
-  - image: taywa/pimcore-extras:10.4.5-arm64
+  - image: taywa/pimcore-extras:10.4.5a-arm64
     platform:
       architecture: arm64
       os: linux

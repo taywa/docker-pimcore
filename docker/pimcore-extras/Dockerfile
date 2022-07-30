@@ -48,3 +48,8 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && jq '. += {"repositories": [{"type": "vcs", "url": "https://github.com/bgpack/php-units-of-measure", "name": "php-units-of-measure/php-units-of-measure"}]}' composer.json | sponge composer.json \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.12" \
     && rm /root/.config/composer/auth.json
+
+# fix thumbnail multi resolutions, https://github.com/pimcore/data-hub/pull/572
+# should be in data hub 1.4.4 (not released)
+ADD patches/572_thumbnail-resolutions-multiple-types-list.patch /tmp/
+RUN cd /opt/pimcore/vendor/pimcore/data-hub && git apply /tmp/572_thumbnail-resolutions-multiple-types-list.patch
