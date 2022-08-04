@@ -197,14 +197,14 @@ RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
-ARG SKELETON_TAG=v10.1.13
-ARG PIMCORE_VERSION=10.4.5
+ARG SKELETON_TAG=v10.2.0
+ARG PIMCORE_VERSION=10.5.1
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
     && mkdir -p /root/.composer
 WORKDIR /opt/pimcore
-RUN sed -i -e "s#pimcore\": \"^10.0#pimcore\": \"$PIMCORE_VERSION#" composer.json
+RUN sed -i -e "s#pimcore\": \"10.x-dev#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN echo "BASE SKELETON INSTALL"
