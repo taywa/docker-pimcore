@@ -4,6 +4,7 @@ ARCHS=linux/arm64,linux/amd64
 
 build-arch:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
+	shasum docker/pimcore/files.tar
 	cd docker && docker buildx build \
 		--load \
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
@@ -17,6 +18,7 @@ build-arch:
 
 build-push-archs:
 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
+	shasum docker/pimcore/files.tar
 	cd docker && DOCKER_BUILDKIT=1 docker buildx build \
 		--push \
 		--platform $(ARCHS) \
