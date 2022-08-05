@@ -28,6 +28,22 @@ if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf"; then
         /etc/ssmtp/ssmtp.conf
 fi
 
+# update .env
+PIMCORE_ENVIRONMENT=${PIMCORE_ENVIRONMENT:-dev}
+if [ "$PIMCORE_ENVIRONMENT" = "dev" ]; then
+    sed -i \
+        -e "/^APP_ENV=/c\APP_ENV=dev" \
+        -e "/^APP_DEBUG=/c\APP_DEBUG=true" \
+        /opt/pimcore/.env
+fi
+
+if [ "$PIMCORE_ENVIRONMENT" = "prod" ]; then
+    sed -i \
+        -e "/^APP_ENV=/c\APP_ENV=prod" \
+        -e "/^APP_DEBUG=/c\APP_DEBUG=false" \
+        /opt/pimcore/.env
+fi
+
 # make sure that default bundles exist
 cd /opt/pimcore/public/bundles
 ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/Resources/public/ pimcorecore
@@ -35,8 +51,6 @@ ln -fs ../../vendor/pimcore/pimcore/bundles/AdminBundle/Resources/public/ pimcor
 ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
 
 # make sure permissions are right
-chown www-data:www-data -R /opt/pimcore/var
-chown www-data:www-data -R /opt/pimcore/var/log
-chown www-data:www-data /var/lib/php/sessions
-chown www-data:www-data /opt/pimcore/public/var
-chown www-data:www-data -R /opt/pimcore/public/var
+[ -d "/opt/pimcore/var" ] && chown www-data:www-data -R /opt/pimcore/var
+[ -d "/var/lib/php/sessions" ] && chown www-data:www-data -R /var/lib/php/sessions
+[ -d "/opt/pimcore/public/var" ] && chown www-data:www-data -R /opt/pimcore/public/var
