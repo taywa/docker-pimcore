@@ -1,4 +1,4 @@
-FROM taywa/pimcore:10.5.2a
+FROM taywa/pimcore:10.5.2b
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
@@ -48,5 +48,3 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && jq '. += {"repositories": [{"type": "vcs", "url": "https://github.com/bgpack/php-units-of-measure", "name": "php-units-of-measure/php-units-of-measure"}]}' composer.json | sponge composer.json \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.12" \
     && rm /root/.config/composer/auth.json
-
-RUN apt-get update && apt-get upgrade -qy

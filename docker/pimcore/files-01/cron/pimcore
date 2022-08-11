@@ -1,4 +1,5 @@
 # We need bash since RANDOM is a bash builtin
 SHELL=/bin/bash
 
-*/5 * * * * www-data sleep $[ ( $RANDOM % 120 ) + 1 ]s; cd /opt/pimcore/; /opt/pimcore/bin/console maintenance
+*/10 * * * * www-data cd /opt/pimcore/; /opt/pimcore/bin/console pimcore:maintenance --async
+*/10 * * * * www-data cd /opt/pimcore/; /opt/pimcore/bin/console messenger:consume pimcore_core pimcore_maintenance pimcore_image_optimize --time-limit=300

@@ -65,6 +65,8 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
         xz-utils \
         zip unzip \
     && rm /etc/ssh/ssh_host_*
+# don't auto activate xdebug (slow)
+RUN rm /etc/php/8.1/fpm/conf.d/20-xdebug.ini && rm /etc/php/8.1/cli/conf.d/20-xdebug.ini
 RUN cd /usr/local/bin \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; } echo PHP_EOL;" \
