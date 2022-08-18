@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
 
 # ADD DATA HUB BUNDLE
-ARG DATAHUB_VERSION=1.5.0
+ARG DATAHUB_VERSION=1.4.4
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
