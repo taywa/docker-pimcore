@@ -1,0 +1,11 @@
+--- Dao.php	2022-08-18 23:26:21.564571186 +0200
++++ Dao_new.php	2022-08-18 23:28:14.132051939 +0200
+@@ -76,7 +76,7 @@
+     {
+         $context = $this->model->getContext();
+         if ($context) {
+-            $containerType = $context['containerType'];
++            $containerType = $context['containerType'] ?? null;
+             if ($containerType == 'objectbrick') {
+                 $containerKey = $context['containerKey'];
+ 

@@ -228,6 +228,8 @@ RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.
 # fix quantity value unit, https://github.com/pimcore/pimcore/pull/9250/files
 # ADD patches/0001-8300-Increase-query-column-and-column-format-to-varc.patch /tmp/
 # RUN cd /opt/vendor/pimcore/pimcore && git apply /tmp/0001-8300-Increase-query-column-and-column-format-to-varc.patch
+ADD patches/Dao.php.patch /tmp/
+RUN patch /opt/pimcore/vendor/pimcore/pimcore/models/DataObject/Localizedfield/Dao.php /tmp/Dao.php.patch
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
 ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
