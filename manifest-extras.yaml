@@ -1,4 +1,4 @@
-image: taywa/pimcore-extras:10.5.3
+image: taywa/pimcore-extras:10.5.2c
 manifests:
   - image: taywa/pimcore-extras:10.5.3-amd64
     platform:
