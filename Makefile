@@ -70,8 +70,8 @@ push-manifest:
 push-extras-manifest:
 	manifest-tool --debug push from-args \
 		--platforms linux/amd64,linux/arm64 \
-		--template taywa/pimcore:$(PIMCORE_EXTRAS_DOCKER)-ARCH \
-		--target taywa/pimcore:$(PIMCORE_EXTRAS_DOCKER)
+		--template taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-ARCH \
+		--target taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)
 
 start:
 	docker-compose exec pimcore s6-svc -u /var/run/s6/services/php-fpm
