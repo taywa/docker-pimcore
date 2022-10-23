@@ -41,3 +41,10 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && jq '. += {"repositories": [{"type": "vcs", "url": "https://github.com/bgpack/php-units-of-measure", "name": "php-units-of-measure/php-units-of-measure"}]}' composer.json | sponge composer.json \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.12" \
     && rm /root/.config/composer/auth.json
+
+# ADD phpfastcache
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
+    && rm /root/.config/composer/auth.json
