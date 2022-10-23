@@ -1,5 +1,5 @@
 PIMCORE_DOCKER=10.5.2c
-PIMCORE_EXTRAS_DOCKER=10.5.2c
+PIMCORE_EXTRAS_DOCKER=10.5.2d
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
@@ -11,28 +11,26 @@ build-arch:
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
 		--cache-from taywa/pimcore:latest \
-		-t taywa/pimcore:$(PIMCORE_DOCKER) \
+		-t taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore
-	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
 	rm docker/pimcore/files.tar
 
-build-push-archs:
-	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
-	shasum docker/pimcore/files.tar
-	cd docker && DOCKER_BUILDKIT=1 docker buildx build \
-		--push \
-		--platform $(ARCHS) \
-		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
-		--build-arg BUILDKIT_INLINE_CACHE=1 \
-		--cache-from taywa/pimcore:latest \
-		-t taywa/pimcore:$(PIMCORE_DOCKER) \
-		pimcore
-	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
-	docker push taywa/pimcore:$(PIMCORE_DOCKER)
-	rm docker/pimcore/files.tar
+# build-push-archs:
+# 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
+# 	shasum docker/pimcore/files.tar
+# 	cd docker && DOCKER_BUILDKIT=1 docker buildx build \
+# 		--push \
+# 		--platform $(ARCHS) \
+# 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
+# 		--build-arg BUILDKIT_INLINE_CACHE=1 \
+# 		--cache-from taywa/pimcore:latest \
+# 		-t taywa/pimcore:$(PIMCORE_DOCKER) \
+# 		pimcore
+# 	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:latest
+# 	docker push taywa/pimcore:$(PIMCORE_DOCKER)
+# 	rm docker/pimcore/files.tar
 
 push-arch:
-	docker tag taywa/pimcore:$(PIMCORE_DOCKER) taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 	docker push taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 
 build-extras-arch:
@@ -42,9 +40,8 @@ build-extras-arch:
 		--secret id=GITHUBTOKEN,src=pimcore-extras/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
 		--cache-from taywa/pimcore-extras:latest \
-		-t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) \
+		-t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore-extras
-	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
 
 # build-extras-push-archs:
 # 	cd docker && DOCKER_BUILDKIT=1 \
@@ -59,14 +56,22 @@ build-extras-arch:
 # 	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:latest
 
 push-extras-arch:
-	docker tag taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER) taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
 
 push-manifest:
 	manifest-tool --debug push from-spec manifest.yaml
 
+push-manifest:
+	manifest-tool --debug push from-args \
+		--platforms linux/amd64,linux/arm64 \
+		--template taywa/pimcore:$(PIMCORE_DOCKER)-ARCH \
+		--target taywa/pimcore:$(PIMCORE_DOCKER)
+
 push-extras-manifest:
-	manifest-tool --debug push from-spec manifest-extras.yaml
+	manifest-tool --debug push from-args \
+		--platforms linux/amd64,linux/arm64 \
+		--template taywa/pimcore:$(PIMCORE_EXTRAS_DOCKER)-ARCH \
+		--target taywa/pimcore:$(PIMCORE_EXTRAS_DOCKER)
 
 start:
 	docker-compose exec pimcore s6-svc -u /var/run/s6/services/php-fpm
