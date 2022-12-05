@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
-ADD files.tar /
+ADD files.tar.gz /
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     apt-get update -qqy && apt-get upgrade -qqy \
     && apt-get install -qqy apt-utils \

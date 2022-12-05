@@ -3,8 +3,9 @@ PIMCORE_EXTRAS_DOCKER=10.5.2d
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
-	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
-	shasum docker/pimcore/files.tar
+	[ ! -e docker/pimcore/files.tar.gz ] || rm docker/pimcore/files.tar.gz
+	cd docker/pimcore/files-00; GZIP=-n gtar --sort=name -czvf ../files.tar.gz * --owner=0 --group=0
+	shasum docker/pimcore/files.tar.gz
 	cd docker && docker buildx build \
 		--load \
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
@@ -13,7 +14,7 @@ build-arch:
 		--cache-from taywa/pimcore:latest \
 		-t taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore
-	rm docker/pimcore/files.tar
+	rm docker/pimcore/files.tar.gz
 
 # build-push-archs:
 # 	cd docker/pimcore/files-00; gtar cf ../files.tar * --owner=0 --group=0
