@@ -1,5 +1,5 @@
 PIMCORE_DOCKER=10.5.11
-PIMCORE_EXTRAS_DOCKER=10.5.2d
+PIMCORE_EXTRAS_DOCKER=10.5.11
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
@@ -58,9 +58,6 @@ build-extras-arch:
 
 push-extras-arch:
 	docker push taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'`
-
-push-manifest:
-	manifest-tool --debug push from-spec manifest.yaml
 
 push-manifest:
 	manifest-tool --debug push from-args \

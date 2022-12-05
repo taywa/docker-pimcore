@@ -1,10 +1,10 @@
-FROM taywa/pimcore:10.5.2c
+FROM taywa/pimcore:10.5.11
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
 
 # ADD DATA HUB BUNDLE
-ARG DATAHUB_VERSION=1.4.4
+ARG DATAHUB_VERSION=1.4.5
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
@@ -12,7 +12,7 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 # ADD MEMBERS BUNDLE
-ARG MEMBERS_VERSION=4.0.3
+ARG MEMBERS_VERSION=4.0.4
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
