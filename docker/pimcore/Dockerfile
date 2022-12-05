@@ -199,8 +199,8 @@ RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
         libreoffice \
         inkscape
-ARG SKELETON_TAG=v10.2.0
-ARG PIMCORE_VERSION=10.5.2
+ARG SKELETON_TAG=v10.2.2
+ARG PIMCORE_VERSION=10.5.11
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
