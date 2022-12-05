@@ -63,3 +63,10 @@ ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrou
 [ -d "/opt/pimcore/var" ] && chown www-data:www-data -R /opt/pimcore/var
 [ -d "/var/lib/php/sessions" ] && chown www-data:www-data -R /var/lib/php/sessions
 [ -d "/opt/pimcore/public/var" ] && chown www-data:www-data -R /opt/pimcore/public/var
+
+# add minica for development if mounted
+if [ -f "/etc/ca/minica.pem" ] && [ ! -f "/usr/local/share/ca-certificates/minica.crt" ]; then
+    echo "adding dev CA cert"
+    ln -s /etc/ca/minica.pem /usr/local/share/ca-certificates/minica.crt
+    update-ca-certificates
+fi
