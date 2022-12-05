@@ -20,6 +20,15 @@ if [ "$START_SSH" = "YES" ]; then
     rm /etc/services.d/ssh/down
 fi
 
+if [ -d "/opt/pimcore/patches" ]; then
+    cd /opt/pimcore
+    for patchfile in $(find /opt/pimcore/patches -type f); do
+        PATCHDIR=$(dirname $patchfile|sed 's#/opt/pimcore/patches/##')
+        (git apply --check --directory pimcore/vendor/$PATCHDIR $patchfile && git apply --directory pimcore/vendor/$PATCHDIR $patchfile) || true
+    done
+fi
+exit
+
 if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf"; then
     echo "* configure ssmtp"
     sed -i \
