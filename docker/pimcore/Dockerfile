@@ -158,7 +158,8 @@ RUN apt-get install -qqy --no-install-recommends \
     && ./configure \
     && make && make install \
     && ldconfig /usr/local/lib \
-    && pear config-set php_ini /etc/php/8.1/fpm/php.ini \
+    && echo "extension=imagick.so" > /etc/php/8.1/mods-available/imagick.ini \
+    && phpenmod imagick \
     && yes ''|pecl install imagick \
     && rm -Rf /usr/local/src/ImageMagick* \
     && apt-get remove --purge -qqy \
