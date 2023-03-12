@@ -48,3 +48,5 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
     && rm /root/.config/composer/auth.json
+
+ADD files-00/etc/gitconfig /etc/gitconfig

@@ -1,4 +1,0 @@
-# We need bash since RANDOM is a bash builtin
-SHELL=/bin/bash
-
-*/5 * * * * www-data cd /opt/pimcore/; /opt/pimcore/bin/console maintenance
