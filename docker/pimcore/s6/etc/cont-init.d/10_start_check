@@ -43,9 +43,17 @@ if [ "$PIMCORE_ENVIRONMENT" = "dev" ]; then
         -e "/^APP_ENV=/c\APP_ENV=dev" \
         -e "/^APP_DEBUG=/c\APP_DEBUG=true" \
         /opt/pimcore/.env
-fi
-
-if [ "$PIMCORE_ENVIRONMENT" = "prod" ]; then
+elif [ "$PIMCORE_ENVIRONMENT" = "prod" ]; then
+    sed -i \
+        -e "/^APP_ENV=/c\APP_ENV=prod" \
+        -e "/^APP_DEBUG=/c\APP_DEBUG=false" \
+        /opt/pimcore/.env
+elif [ "$PIMCORE_ENVIRONMENT" = "prodtest" ]; then
+    sed -i \
+        -e "/^APP_ENV=/c\APP_ENV=prodtest" \
+        -e "/^APP_DEBUG=/c\APP_DEBUG=false" \
+        /opt/pimcore/.env
+else
     sed -i \
         -e "/^APP_ENV=/c\APP_ENV=prod" \
         -e "/^APP_DEBUG=/c\APP_DEBUG=false" \
