@@ -49,4 +49,11 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
     && rm /root/.config/composer/auth.json
 
+# ADD requirements for release management
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require pimcore/bundle-generator:v1.0.5 league/commonmark:2.4.2 league/html-to-markdown:4.10.0 jfcherng/php-diff:6.16.2 \
+    && rm /root/.config/composer/auth.json
+
 ADD files-00/etc/gitconfig /etc/gitconfig
