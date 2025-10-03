@@ -6,64 +6,64 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     apt-get update -qqy && apt-get upgrade -qqy \
     && apt-get install -qqy apt-utils \
     && apt-get install -qqy --no-install-recommends \
-        acl \
-        busybox \
-        ca-certificates \
-        cmake \
-        cron \
-        curl \
-        exiftool \
-        ghostscript \
-        git-core \
-        graphicsmagick \
-        graphviz \
-        html2text \
-        jpegoptim \
-        jq \
-        language-pack-de \
-        lftp \
-        locales \
-        make \
-        mariadb-client \
-        moreutils \
-        nasm \
-        nginx-extras \
-        opencv-data \
-        openjdk-11-jre-headless \
-        openssh-server \
-        php-apcu \
-        php-bcmath \
-        php-bz2 \
-        php-cli \
-        php-curl \
-        php-dev \
-        php-exif \
-        php-fileinfo \
-        php-fpm \
-        php-gd \
-        php-gd \
-        php-intl \
-        php-mbstring \
-        php-mysql \
-        php-opcache \
-        php-pclzip \
-        php-pear \
-        php-redis \
-        php-soap \
-        php-xdebug \
-        php-xml \
-        php-xmlrpc \
-        php-zip \
-        pngcrush \
-        poppler-utils \
-        python3-pip \
-        rsync \
-        silversearcher-ag \
-        ssmtp \
-        sudo \
-        unzip \
-        xz-utils \
-        zip unzip \
+    acl \
+    busybox \
+    ca-certificates \
+    cmake \
+    cron \
+    curl \
+    exiftool \
+    ghostscript \
+    git-core \
+    graphicsmagick \
+    graphviz \
+    html2text \
+    jpegoptim \
+    jq \
+    language-pack-de \
+    lftp \
+    locales \
+    make \
+    mariadb-client \
+    moreutils \
+    nasm \
+    nginx-extras \
+    opencv-data \
+    openjdk-11-jre-headless \
+    openssh-server \
+    php-apcu \
+    php-bcmath \
+    php-bz2 \
+    php-cli \
+    php-curl \
+    php-dev \
+    php-exif \
+    php-fileinfo \
+    php-fpm \
+    php-gd \
+    php-gd \
+    php-intl \
+    php-mbstring \
+    php-mysql \
+    php-opcache \
+    php-pclzip \
+    php-pear \
+    php-redis \
+    php-soap \
+    php-xdebug \
+    php-xml \
+    php-xmlrpc \
+    php-zip \
+    pngcrush \
+    poppler-utils \
+    python3-pip \
+    rsync \
+    silversearcher-ag \
+    ssmtp \
+    sudo \
+    unzip \
+    xz-utils \
+    zip unzip \
     && rm /etc/ssh/ssh_host_*
 # don't auto activate xdebug (slow)
 RUN rm /etc/php/8.1/fpm/conf.d/20-xdebug.ini && rm /etc/php/8.1/cli/conf.d/20-xdebug.ini
@@ -84,74 +84,74 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && rm -f /tmp/s6-overlay.tar.gz
 ARG IMAGEMAGICK_VERSION=7.1.0-26
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
-        bzip2 \
-        facedetect \
-        gsfonts \
-        libde265-0 \
-        libdjvulibre21 \
-        libfftw3-bin \
-        libfontconfig1 \
-        libfreetype6 \
-        libheif1 \
-        libicu70 \
-        libjpeg-turbo8 \
-        liblcms2-2 \
-        liblqr-1-0 \
-        libltdl7 \
-        liblzma5 \
-        libonig5 \
-        libopenexr25 \
-        libopenjp2-7 \
-        libopenjp2-7 \
-        libpango-1.0-0 \
-        libpng16-16 \
-        librsvg2-2 \
-        librsvg2-2 \
-        libtiff5 \
-        libwebp7 \
-        libwmf0.2-7 \
-        libxml2 \
-        libxpm4 \
-        libxslt1.1 \
-        libzip4 \
-        netpbm \
-        optipng \
-        pngquant \
-        zlib1g \
-        zopfli
+    bzip2 \
+    facedetect \
+    gsfonts \
+    libde265-0 \
+    libdjvulibre21 \
+    libfftw3-bin \
+    libfontconfig1 \
+    libfreetype6 \
+    libheif1 \
+    libicu70 \
+    libjpeg-turbo8 \
+    liblcms2-2 \
+    liblqr-1-0 \
+    libltdl7 \
+    liblzma5 \
+    libonig5 \
+    libopenexr25 \
+    libopenjp2-7 \
+    libopenjp2-7 \
+    libpango-1.0-0 \
+    libpng16-16 \
+    librsvg2-2 \
+    librsvg2-2 \
+    libtiff5 \
+    libwebp7 \
+    libwmf0.2-7 \
+    libxml2 \
+    libxpm4 \
+    libxslt1.1 \
+    libzip4 \
+    netpbm \
+    optipng \
+    pngquant \
+    zlib1g \
+    zopfli
 RUN apt-get install -qqy --no-install-recommends \
-        build-essential \
-        checkinstall \
-        libbz2-dev \
-        libde265-dev \
-        libdjvulibre-dev \
-        libfftw3-dev \
-        libfontconfig1-dev \
-        libfreetype6-dev \
-        libheif-dev \
-        libicu-dev \
-        libjpeg-turbo8-dev \
-        liblcms2-dev \
-        liblqr-1-0-dev \
-        libltdl-dev \
-        liblzma-dev \
-        libonig-dev \
-        libopenexr-dev \
-        libopenjp2-7-dev \
-        libopenjp2-7-dev \
-        libpango1.0-dev \
-        libpng-dev \
-        librsvg2-dev \
-        librsvg2-dev \
-        libtiff5-dev \
-        libwebp-dev \
-        libwebp-dev \
-        libwmf-dev \
-        libxml2-dev \
-        libxpm-dev \
-        libxslt1-dev \
-        libzip-dev \
-        zlib1g-dev \
+    build-essential \
+    checkinstall \
+    libbz2-dev \
+    libde265-dev \
+    libdjvulibre-dev \
+    libfftw3-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libheif-dev \
+    libicu-dev \
+    libjpeg-turbo8-dev \
+    liblcms2-dev \
+    liblqr-1-0-dev \
+    libltdl-dev \
+    liblzma-dev \
+    libonig-dev \
+    libopenexr-dev \
+    libopenjp2-7-dev \
+    libopenjp2-7-dev \
+    libpango1.0-dev \
+    libpng-dev \
+    librsvg2-dev \
+    librsvg2-dev \
+    libtiff5-dev \
+    libwebp-dev \
+    libwebp-dev \
+    libwmf-dev \
+    libxml2-dev \
+    libxpm-dev \
+    libxslt1-dev \
+    libzip-dev \
+    zlib1g-dev \
     && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
     && cd /usr/local/src && tar xf ImageMagick.tar.gz \
     && cd ImageMagick-$IMAGEMAGICK_VERSION \
@@ -163,45 +163,45 @@ RUN apt-get install -qqy --no-install-recommends \
     && yes ''|pecl install imagick \
     && rm -Rf /usr/local/src/ImageMagick* \
     && apt-get remove --purge -qqy \
-        build-essential \
-        checkinstall \
-        libbz2-dev \
-        libde265-dev \
-        libdjvulibre-dev \
-        libfftw3-dev \
-        libfontconfig1-dev \
-        libfreetype6-dev \
-        libheif-dev \
-        libicu-dev \
-        libjpeg-turbo8-dev \
-        liblcms2-dev \
-        liblqr-1-0-dev \
-        libltdl-dev \
-        liblzma-dev \
-        libonig-dev \
-        libopenexr-dev \
-        libopenjp2-7-dev \
-        libopenjp2-7-dev \
-        libpango1.0-dev \
-        libpng-dev \
-        librsvg2-dev \
-        librsvg2-dev \
-        libtiff5-dev \
-        libwebp-dev \
-        libwebp-dev \
-        libwmf-dev \
-        libxml2-dev \
-        libxpm-dev \
-        libxslt1-dev \
-        libzip-dev \
-        zlib1g-dev \
+    build-essential \
+    checkinstall \
+    libbz2-dev \
+    libde265-dev \
+    libdjvulibre-dev \
+    libfftw3-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libheif-dev \
+    libicu-dev \
+    libjpeg-turbo8-dev \
+    liblcms2-dev \
+    liblqr-1-0-dev \
+    libltdl-dev \
+    liblzma-dev \
+    libonig-dev \
+    libopenexr-dev \
+    libopenjp2-7-dev \
+    libopenjp2-7-dev \
+    libpango1.0-dev \
+    libpng-dev \
+    librsvg2-dev \
+    librsvg2-dev \
+    libtiff5-dev \
+    libwebp-dev \
+    libwebp-dev \
+    libwmf-dev \
+    libxml2-dev \
+    libxpm-dev \
+    libxslt1-dev \
+    libzip-dev \
+    zlib1g-dev \
     && apt-get autoremove -y --purge
 RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
-        libreoffice \
-        inkscape
-ARG SKELETON_TAG=v10.2.3
-ARG PIMCORE_VERSION=10.5.18
+    libreoffice \
+    inkscape
+ARG SKELETON_TAG=v10.2.6
+ARG PIMCORE_VERSION=10.6.9
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
