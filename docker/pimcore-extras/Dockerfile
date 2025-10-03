@@ -12,10 +12,11 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 # ADD MEMBERS BUNDLE
-ARG MEMBERS_VERSION=5.1.0
+ARG MEMBERS_VERSION=v5.1.2
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    composer require doctrine/orm:"^2.7" --with-all-dependencies \
+    && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require dachcom-digital/members:$MEMBERS_VERSION \
     && rm /root/.config/composer/auth.json
 
