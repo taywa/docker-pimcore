@@ -1,10 +1,10 @@
-FROM taywa/pimcore:10.5.18
+FROM taywa/pimcore:10.6.9
 MAINTAINER Yves Serrano <ys@taywa.ch>
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
 
 # ADD DATA HUB BUNDLE
-ARG DATAHUB_VERSION=1.5.5
+ARG DATAHUB_VERSION=1.7.5
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
@@ -12,20 +12,20 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 # ADD MEMBERS BUNDLE
-ARG MEMBERS_VERSION=4.0.4
+ARG MEMBERS_VERSION=4.1.2
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer require dachcom-digital/members:$MEMBERS_VERSION \
     && rm /root/.config/composer/auth.json
 
-# ADD TRANSLATION LIBS
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
-    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require aws/aws-sdk-php "3.232.4" \
-    && composer require babymarkt/deepl-php-lib "v4.0.0" \
-    && rm /root/.config/composer/auth.json
+# # ADD TRANSLATION LIBS
+# RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+#     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+#     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+#     && composer require aws/aws-sdk-php "3.232.4" \
+#     && composer require babymarkt/deepl-php-lib "v4.0.0" \
+#     && rm /root/.config/composer/auth.json
 
 # ADD PHP JWT
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
@@ -42,18 +42,18 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.19" \
     && rm /root/.config/composer/auth.json
 
-# ADD phpfastcache
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
-    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
-    && rm /root/.config/composer/auth.json
+# # ADD phpfastcache
+# RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+#     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+#     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+#     && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
+#     && rm /root/.config/composer/auth.json
 
-# ADD requirements for release management
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
-    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/bundle-generator:v1.0.5 league/commonmark:2.4.2 league/html-to-markdown:4.10.0 jfcherng/php-diff:6.16.2 \
-    && rm /root/.config/composer/auth.json
+# # ADD requirements for release management
+# RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+#     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+#     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+#     && composer require pimcore/bundle-generator:v1.0.5 league/commonmark:2.4.2 league/html-to-markdown:4.10.0 jfcherng/php-diff:6.16.2 \
+#     && rm /root/.config/composer/auth.json
 
 ADD files-00/etc/gitconfig /etc/gitconfig
