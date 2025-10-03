@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Yves Serrano <ys@taywa.ch>
+LABEL ch.taywa.image.authors="ys@taywa.ch"
 ENV DEBIAN_FRONTEND=noninteractive
 ADD files.tar.gz /
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
@@ -200,14 +200,12 @@ RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
     libreoffice \
     inkscape
-ARG SKELETON_TAG=v10.2.6
-ARG PIMCORE_VERSION=10.6.9
+ARG SKELETON_TAG=v11.1.0-RC1
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
     && mkdir -p /root/.composer
 WORKDIR /opt/pimcore
-RUN sed -i -e "s#pimcore\": \"\^10.5#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN echo "BASE SKELETON INSTALL"
