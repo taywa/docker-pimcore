@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 LABEL ch.taywa.image.authors="ys@taywa.ch"
 ENV DEBIAN_FRONTEND=noninteractive
 ADD files.tar.gz /
@@ -66,7 +66,7 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     zip unzip \
     && rm /etc/ssh/ssh_host_*
 # don't auto activate xdebug (slow)
-RUN rm /etc/php/8.1/fpm/conf.d/20-xdebug.ini && rm /etc/php/8.1/cli/conf.d/20-xdebug.ini
+# RUN rm /etc/php/8.1/fpm/conf.d/20-xdebug.ini && rm /etc/php/8.1/cli/conf.d/20-xdebug.ini
 RUN cd /usr/local/bin \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; } echo PHP_EOL;" \
@@ -82,7 +82,7 @@ RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-ove
     && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
     && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
     && rm -f /tmp/s6-overlay.tar.gz
-ARG IMAGEMAGICK_VERSION=7.1.0-26
+ARG IMAGEMAGICK_VERSION=7.1.2-7
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
     bzip2 \
     facedetect \
@@ -93,21 +93,21 @@ RUN apt-get update && apt-get install -qqy --no-install-recommends \
     libfontconfig1 \
     libfreetype6 \
     libheif1 \
-    libicu70 \
+    libicu74 \
     libjpeg-turbo8 \
     liblcms2-2 \
     liblqr-1-0 \
     libltdl7 \
     liblzma5 \
     libonig5 \
-    libopenexr25 \
+    libopenexr-3-1-30 \
     libopenjp2-7 \
     libopenjp2-7 \
     libpango-1.0-0 \
     libpng16-16 \
     librsvg2-2 \
     librsvg2-2 \
-    libtiff5 \
+    libtiff6 \
     libwebp7 \
     libwmf0.2-7 \
     libxml2 \
@@ -152,13 +152,13 @@ RUN apt-get install -qqy --no-install-recommends \
     libxslt1-dev \
     libzip-dev \
     zlib1g-dev \
-    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/$IMAGEMAGICK_VERSION.tar.gz \
+    && curl -Ls -o /usr/local/src/ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/refs/tags/$IMAGEMAGICK_VERSION.tar.gz \
     && cd /usr/local/src && tar xf ImageMagick.tar.gz \
     && cd ImageMagick-$IMAGEMAGICK_VERSION \
     && ./configure \
     && make && make install \
     && ldconfig /usr/local/lib \
-    && echo "extension=imagick.so" > /etc/php/8.1/mods-available/imagick.ini \
+    && echo "extension=imagick.so" > /etc/php/8.3/mods-available/imagick.ini \
     && phpenmod imagick \
     && yes ''|pecl install imagick \
     && rm -Rf /usr/local/src/ImageMagick* \
@@ -200,7 +200,7 @@ RUN echo "EXTRA THUMBNAIL APPS"
 RUN apt-get install -qqy --no-install-recommends \
     libreoffice \
     inkscape
-ARG SKELETON_TAG=v11.1.0-RC1
+ARG SKELETON_TAG=v2024.4.2
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
     && rm -Rf .git \
@@ -209,6 +209,7 @@ WORKDIR /opt/pimcore
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN echo "BASE SKELETON INSTALL"
+RUN apt-get install -qqy --no-install-recommends  php-amqp
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
@@ -221,12 +222,12 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
-RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
-    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
-    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
+RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.3/fpm/php.ini \
+    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.3/fpm/php.ini \
+    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.3/fpm/php.ini
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
-ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
+ADD files-01/fpm/pool.d /etc/php/8.3/fpm/pool.d
 ADD s6/etc/services.d /etc/services.d
 ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]
