@@ -1,10 +1,15 @@
 PIMCORE_DOCKER=10.6.9
 PIMCORE_EXTRAS_DOCKER=10.6.9
 ARCHS=linux/arm64,linux/amd64
+OS := $(shell uname -s)
 
 build-arch:
 	[ ! -e docker/pimcore/files.tar.gz ] || rm docker/pimcore/files.tar.gz
+ifeq ($(OS),Linux)
+	cd docker/pimcore/files-00; GZIP=-n tar --sort=name -czvf ../files.tar.gz * --owner=0 --group=0
+else
 	cd docker/pimcore/files-00; GZIP=-n gtar --sort=name -czvf ../files.tar.gz * --owner=0 --group=0
+endif
 	shasum docker/pimcore/files.tar.gz
 	cd docker && docker buildx build \
 		--load \
