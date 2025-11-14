@@ -1,5 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Yves Serrano <ys@taywa.ch>
+LABEL ch.taywa.image.authors="ys@taywa.ch"
 ENV DEBIAN_FRONTEND=noninteractive
 ADD files.tar.gz /
 RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
@@ -210,16 +210,42 @@ WORKDIR /opt/pimcore
 RUN sed -i -e "s#pimcore\": \"\^10.5#pimcore\": \"$PIMCORE_VERSION#" composer.json
 ENV COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN echo "UPDATE compose.json"
+RUN patch composer.json <<'EOF'
+--- a/composer.json  2025-11-14 13:36:39.359217057 +0100
++++ b/composer.json   2025-11-14 13:39:49.943539845 +0100
+@@ -5,7 +5,10 @@
+   "config": {
+     "optimize-autoloader": true,
+     "sort-packages": true,
+-    "process-timeout": 0
++    "process-timeout": 0,
++    "audit": {
++      "block-insecure": false
++    }
+   },
+   "require": {
+     "pimcore/pimcore": "10.6.9"
+@@ -29,12 +32,6 @@
+       "Pimcore\\Composer::postInstall",
+       "@pimcore-scripts"
+     ],
+-    "post-update-cmd": [
+-      "Pimcore\\Composer::postUpdate",
+-      "@pimcore-scripts",
+-      "Pimcore\\Composer::executeMigrationsUp",
+-      "@pimcore-scripts"
+-    ],
+     "pimcore-scripts": [
+       "Pimcore\\Composer::clearCache",
+       "Pimcore\\Composer::installAssets"
+EOF
 RUN echo "BASE SKELETON INSTALL"
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.config/composer/auth.json
-RUN echo "REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS"
-RUN mv composer.json composer.jq.json \
-    && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
-    && rm composer.jq.json
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && cp composer.lock /opt/composer.orig.lock
