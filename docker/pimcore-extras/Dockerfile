@@ -21,12 +21,13 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 # # ADD TRANSLATION LIBS
-# RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
-#     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-#     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-#     && composer require aws/aws-sdk-php "3.232.4" \
-#     && composer require babymarkt/deepl-php-lib "v4.0.0" \
-#     && rm /root/.config/composer/auth.json
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require aws/aws-sdk-php "3.366.3" \
+    && composer require php-http/discovery "1.20.0" -q \
+    && composer require deeplcom/deepl-php "v1.15.0" \
+    && rm /root/.config/composer/auth.json
 
 # ADD PHP JWT
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
