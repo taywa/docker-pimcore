@@ -224,12 +224,6 @@ RUN cp composer.json composer.lock /opt/ \
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
-# extra bundels
-RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
-    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer require pimcore/quill-bundle "v1.0.3" \
-    && rm /root/.config/composer/auth.json
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/cron/pimcore /etc/cron.d/
 ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
