@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv sh
+#!/command/with-contenv sh
 
 mkdir -p /run/sshd
 chmod 0755 /run/sshd

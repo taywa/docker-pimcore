@@ -1,24 +1,4 @@
-#!/usr/bin/with-contenv sh
-
-START_NGINX=${START_NGINX:-NO}
-if [ "$START_NGINX" = "YES" ]; then
-    rm /etc/services.d/nginx/down
-fi
-
-START_CRON=${START_CRON:-NO}
-if [ "$START_CRON" = "YES" ]; then
-    rm /etc/services.d/cron/down
-fi
-
-START_PHP_FPM=${START_PHP_FPM:-NO}
-if [ "$START_PHP_FPM" = "YES" ]; then
-    rm /etc/services.d/php-fpm/down
-fi
-
-START_SSH=${START_SSH:-NO}
-if [ "$START_SSH" = "YES" ]; then
-    rm /etc/services.d/ssh/down
-fi
+#!/command/with-contenv sh
 
 if [ -d "/opt/pimcore/patches" ]; then
     cd /opt/pimcore
@@ -62,14 +42,25 @@ fi
 
 # make sure that default bundles exist
 cd /opt/pimcore/public/bundles
-ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/Resources/public/ pimcorecore
-ln -fs ../../vendor/pimcore/pimcore/bundles/AdminBundle/Resources/public/ pimcoreadmin
 ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
+ln -fs ../../vendor/pimcore/pimcore/bundles/ApplicationLoggerBundle/public/ pimcoreapplicationlogger
+ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/public/ pimcorecore
+ln -fs ../../vendor/pimcore/pimcore/bundles/SimpleBackendSearchBundle/public/ pimcoresimplebackendsearch
+ln -fs ../../vendor/pimcore/admin-ui-classic-bundle/public/ pimcoreadmin
 
 # make sure permissions are right
-[ -d "/opt/pimcore/var" ] && chown www-data:www-data -R /opt/pimcore/var
-[ -d "/var/lib/php/sessions" ] && chown www-data:www-data -R /var/lib/php/sessions
-[ -d "/opt/pimcore/public/var" ] && chown www-data:www-data -R /opt/pimcore/public/var
+if [ -d "/opt/pimcore/var" ]; then 
+    find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \)
+    find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
+fi
+if [ -d "/opt/pimcore/public/var" ]; then 
+    find /opt/pimcore/public/var \( ! -uid 33 -o ! -gid 33 \)
+    find /opt/pimcore/public/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
+fi
+if [ -d "/var/lib/php/sessions" ]; then 
+    find /var/lib/php/sessions \( ! -uid 33 -o ! -gid 33 \)
+    find /var/lib/php/sessions \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
+fi
 
 # add minica for development if mounted
 if [ -f "/etc/ca/minica.pem" ] && [ ! -f "/usr/local/share/ca-certificates/minica.crt" ]; then
