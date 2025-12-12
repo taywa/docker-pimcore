@@ -1,0 +1,6 @@
+#!/command/with-contenv sh
+
+cd /opt/pimcore
+
+sleep 3600
+exec s6-setuidgid www-data php bin/console pimcore:maintenance

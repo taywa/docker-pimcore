@@ -64,6 +64,7 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     unzip \
     xz-utils \
     zip unzip \
+    wget \
     && rm /etc/ssh/ssh_host_*
 # don't auto activate xdebug (slow)
 RUN rm /etc/php/8.1/fpm/conf.d/20-xdebug.ini && rm /etc/php/8.1/cli/conf.d/20-xdebug.ini
@@ -77,11 +78,6 @@ RUN cd /usr/local/bin \
 RUN locale-gen en_US.UTF-8 \
     && echo "Europe/Zurich" > /etc/timezone && ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 PATH=$PATH:/opt/pimcore/bin
-ARG S6_OVERLAY_VERSION=v2.2.0.3
-RUN curl -Ls -o /tmp/s6-overlay.tar.gz https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch|sed 's/x86_64/amd64/'`.tar.gz \
-    && tar xfz /tmp/s6-overlay.tar.gz -C /  --exclude="./bin" \
-    && tar xzf /tmp/s6-overlay.tar.gz  -C /usr ./bin \
-    && rm -f /tmp/s6-overlay.tar.gz
 ARG IMAGEMAGICK_VERSION=7.1.0-26
 RUN apt-get update && apt-get install -qqy --no-install-recommends \
     bzip2 \
@@ -224,10 +220,16 @@ RUN cp composer.json composer.lock /opt/ \
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
+# s6 overlay
+ARG S6_OVERLAY_VERSION=v3.2.1.0
+ENV S6_STAGE2_HOOK=/etc/s6-overlay/setup-user-services.sh
+ENV PATH="${PATH}:/command"
+RUN wget -q -O - https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-noarch.tar.xz | \
+    xzcat | tar x  --exclude=./*/*/*/*/*/*/*/*/legacy-cont-init  --exclude=./*/*/*/*/*/*/legacy-cont-init --exclude=./*/*/*/*/*/*/legacy-services --exclude=./*/*/*/*/*/*/*/*/legacy-services -C /
+RUN wget -q -O -  https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch`.tar.xz | \
+    xzcat | tar x -C /
+COPY s6-overlay /etc/s6-overlay
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
-ADD files-01/cron/pimcore /etc/cron.d/
 ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
-ADD s6/etc/services.d /etc/services.d
-ADD s6/etc/cont-init.d /etc/cont-init.d
 ENTRYPOINT ["/init"]
 EXPOSE 80

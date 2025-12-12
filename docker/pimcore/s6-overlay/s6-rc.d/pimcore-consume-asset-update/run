@@ -1,0 +1,4 @@
+#!/command/with-contenv sh
+
+cd /opt/pimcore
+exec s6-setuidgid www-data php bin/console messenger:consume pimcore_asset_update --memory-limit=1024M --time-limit=3600
