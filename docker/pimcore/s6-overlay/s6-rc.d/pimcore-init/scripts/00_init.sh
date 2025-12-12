@@ -1,4 +1,4 @@
-#!/command/with-contenv sh
+#!/bin/sh
 
 if [ -d "/opt/pimcore/patches" ]; then
     cd /opt/pimcore
@@ -8,7 +8,7 @@ if [ -d "/opt/pimcore/patches" ]; then
     done
 fi
 
-if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf"; then
+if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf" 2>/dev/null; then
     echo "* configure ssmtp"
     sed -i \
         -e "s#mailhub=mail#mailhub=${MAILHUB:-localhost}#" \
@@ -49,18 +49,9 @@ ln -fs ../../vendor/pimcore/pimcore/bundles/SimpleBackendSearchBundle/public/ pi
 ln -fs ../../vendor/pimcore/admin-ui-classic-bundle/public/ pimcoreadmin
 
 # make sure permissions are right
-if [ -d "/opt/pimcore/var" ]; then 
-    find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \)
-    find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
-fi
-if [ -d "/opt/pimcore/public/var" ]; then 
-    find /opt/pimcore/public/var \( ! -uid 33 -o ! -gid 33 \)
-    find /opt/pimcore/public/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
-fi
-if [ -d "/var/lib/php/sessions" ]; then 
-    find /var/lib/php/sessions \( ! -uid 33 -o ! -gid 33 \)
-    find /var/lib/php/sessions \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
-fi
+[ -d "/opt/pimcore/var" ] && find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
+[ -d "/opt/pimcore/public/var" ] && find /opt/pimcore/public/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +
+[ -d "/var/lib/php/sessions" ] && find /var/lib/php/sessions \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} + 
 
 # add minica for development if mounted
 if [ -f "/etc/ca/minica.pem" ] && [ ! -f "/usr/local/share/ca-certificates/minica.crt" ]; then

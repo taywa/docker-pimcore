@@ -222,13 +222,13 @@ RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
 # s6 overlay
 ARG S6_OVERLAY_VERSION=v3.2.1.0
-ENV S6_STAGE2_HOOK=/etc/s6-overlay/setup-user-services.sh
 ENV PATH="${PATH}:/command"
 RUN wget -q -O - https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-noarch.tar.xz | \
     xzcat | tar x  --exclude=./*/*/*/*/*/*/*/*/legacy-cont-init  --exclude=./*/*/*/*/*/*/legacy-cont-init --exclude=./*/*/*/*/*/*/legacy-services --exclude=./*/*/*/*/*/*/*/*/legacy-services -C /
 RUN wget -q -O -  https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch`.tar.xz | \
     xzcat | tar x -C /
-COPY s6-overlay /etc/s6-overlay
+COPY s6-overlay/s6-rc.d /etc/s6-overlay/s6-rc.d
+COPY s6-overlay/scripts /etc/s6-overlay/scripts
 ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
 ENTRYPOINT ["/init"]
