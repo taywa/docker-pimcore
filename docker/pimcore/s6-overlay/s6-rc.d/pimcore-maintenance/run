@@ -3,4 +3,4 @@
 cd /opt/pimcore
 
 sleep 3600
-exec s6-setuidgid www-data php bin/console pimcore:maintenance
+exec s6-setuidgid www-data php bin/console pimcore:maintenance $PIMCORE_MESSENGER_DEBUG
