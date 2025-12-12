@@ -1,15 +1,5 @@
 #!/command/with-contenv sh
 
-START_CRON=${START_CRON:-YES}
-if [ "$START_CRON" = "YES" ]; then
-    touch /etc/s6-overlay/s6-rc.d/user/contents.d/cron
-fi
-
-START_NGINX=${START_NGINX:-NO}
-if [ "$START_NGINX" = "YES" ]; then
-    touch /etc/s6-overlay/s6-rc.d/user/contents.d/nginx
-fi
-
 START_PHP_FPM=${START_PHP_FPM:-NO}
 if [ "$START_PHP_FPM" = "YES" ]; then
     touch /etc/s6-overlay/s6-rc.d/user/contents.d/php-fpm
