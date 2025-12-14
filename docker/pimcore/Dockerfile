@@ -215,10 +215,10 @@ RUN mv composer.json composer.jq.json \
 RUN cp composer.json /opt/ \
     && cp composer.json /opt/composer.orig.json \
     && sed -i -e 's@pimcore": "\*@pimcore": "v11.5.13@' composer.json \
-    && sed -i -e 's@admin-ui-classic-bundle": "\*@admin-ui-classic-bundle": "v1.7.15#' composer.json
-RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
-    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
-    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
+    && sed -i -e 's@admin-ui-classic-bundle": "\*@admin-ui-classic-bundle": "v1.7.15@' composer.json
+RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.3/fpm/php.ini \
+    && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.3/fpm/php.ini \
+    && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.3/fpm/php.ini
 RUN composer config audit.block-insecure false \
     && composer install \
     && rm /root/.config/composer/auth.json
@@ -231,6 +231,6 @@ RUN wget -q -O - https://github.com/just-containers/s6-overlay/releases/download
 RUN wget -q -O -  https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch`.tar.xz | \
     xzcat | tar x -C /
 COPY s6-overlay /etc/s6-overlay
-ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
+ADD files-01/fpm/pool.d /etc/php/8.3/fpm/pool.d
 ENTRYPOINT ["/init"]
 EXPOSE 80
