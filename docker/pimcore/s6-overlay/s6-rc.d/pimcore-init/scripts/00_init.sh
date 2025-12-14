@@ -41,12 +41,12 @@ else
 fi
 
 # make sure that default bundles exist
-cd /opt/pimcore/public/bundles
-ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
-ln -fs ../../vendor/pimcore/pimcore/bundles/ApplicationLoggerBundle/public/ pimcoreapplicationlogger
-ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/public/ pimcorecore
-ln -fs ../../vendor/pimcore/pimcore/bundles/SimpleBackendSearchBundle/public/ pimcoresimplebackendsearch
-ln -fs ../../vendor/pimcore/admin-ui-classic-bundle/public/ pimcoreadmin
+# cd /opt/pimcore/public/bundles
+# ln -fs ../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/ fosjsrouting
+# ln -fs ../../vendor/pimcore/pimcore/bundles/ApplicationLoggerBundle/public/ pimcoreapplicationlogger
+# ln -fs ../../vendor/pimcore/pimcore/bundles/CoreBundle/public/ pimcorecore
+# ln -fs ../../vendor/pimcore/pimcore/bundles/SimpleBackendSearchBundle/public/ pimcoresimplebackendsearch
+# ln -fs ../../vendor/pimcore/admin-ui-classic-bundle/public/ pimcoreadmin
 
 # make sure permissions are right
 [ -d "/opt/pimcore/var" ] && find /opt/pimcore/var \( ! -uid 33 -o ! -gid 33 \) -execdir chown 33:33 {} +

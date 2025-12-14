@@ -207,21 +207,23 @@ RUN echo "BASE SKELETON INSTALL"
 RUN apt-get install -qqy --no-install-recommends  php-amqp
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-    cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-    && composer install \
-    && rm /root/.config/composer/auth.json
-ARG PIMCORE_VERSION=11.1.6
+    cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN)
+ARG PIMCORE_VERSION=v11.1.6
+ARG ADMIN_UI_VERSION=v1.3.5
 RUN echo "REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS"
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
     && rm composer.jq.json
-RUN cp composer.json composer.lock /opt/ \
+RUN cp composer.json /opt/ \
     && cp composer.json /opt/composer.orig.json \
-    && cp composer.lock /opt/composer.orig.lock \
-    && sed -i -e "s#pimcore\": \"\^11.1#pimcore\": \"$PIMCORE_VERSION#" composer.json
+    && sed -i -e "s#pimcore\": \"\^11.1#pimcore\": \"$PIMCORE_VERSION#" composer.json \
+    && sed -i -e "s#admin-ui-classic-bundle\": \"\^1.2#admin-ui-classic-bundle\": \"$ADMIN_UI_VERSION#" composer.json
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
+RUN composer config audit.block-insecure false \
+    && composer install \
+    && rm /root/.config/composer/auth.json
 # s6 overlay
 ARG S6_OVERLAY_VERSION=v3.2.1.0
 ENV S6_STAGE2_HOOK=/etc/s6-overlay/services-setup.sh
