@@ -27,7 +27,6 @@ RUN cp /etc/skel/.bashrc /etc/skel/.bash_aliases /root/ && \
     mariadb-client \
     moreutils \
     nasm \
-    nginx-extras \
     opencv-data \
     openjdk-11-jre-headless \
     openssh-server \
@@ -210,13 +209,15 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     cd /opt/pimcore && composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
     && composer install \
     && rm /root/.config/composer/auth.json
+ARG PIMCORE_VERSION=11.1.6
 RUN echo "REMOVE AUTO UPDATE FROM PIMCORE SCRIPTS"
 RUN mv composer.json composer.jq.json \
     && jq 'del(.scripts["post-update-cmd"])' composer.jq.json > composer.json \
     && rm composer.jq.json
 RUN cp composer.json composer.lock /opt/ \
     && cp composer.json /opt/composer.orig.json \
-    && cp composer.lock /opt/composer.orig.lock
+    && cp composer.lock /opt/composer.orig.lock \
+    sed -i -e "s#pimcore\": \"\^11.1#pimcore\": \"$PIMCORE_VERSION#" composer.json
 RUN sed -i -e "s#memory_limit = 128M#memory_limit = 512M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#post_max_size = 8M#post_max_size = 50M#" /etc/php/8.1/fpm/php.ini \
     && sed -i -e "s#upload_max_filesize = 2M#upload_max_filesize = 50M#" /etc/php/8.1/fpm/php.ini
@@ -229,7 +230,6 @@ RUN wget -q -O - https://github.com/just-containers/s6-overlay/releases/download
 RUN wget -q -O -  https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`arch`.tar.xz | \
     xzcat | tar x -C /
 COPY s6-overlay /etc/s6-overlay
-ADD files-01/nginx/http.conf /etc/nginx/conf.d/
 ADD files-01/fpm/pool.d /etc/php/8.1/fpm/pool.d
 ENTRYPOINT ["/init"]
 EXPOSE 80
