@@ -1,5 +1,5 @@
-PIMCORE_DOCKER=11.5.11
-PIMCORE_EXTRAS_DOCKER=11.5.11
+PIMCORE_DOCKER=11.5.13
+PIMCORE_EXTRAS_DOCKER=11.5.13
 ARCHS=linux/arm64,linux/amd64
 
 build-arch:
@@ -11,6 +11,7 @@ build-arch:
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
+		--cache-from taywa/pimcore:latest \
 		-t taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore
 	rm docker/pimcore/files.tar.gz
