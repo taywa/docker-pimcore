@@ -12,7 +12,6 @@ fi
 
 START_PIMCORE_MESSENGER_CONSUME=${START_PIMCORE_MESSENGER_CONSUME:-NO}
 if [ "$START_PIMCORE_MESSENGER_CONSUME" = "YES" ]; then
-    touch /etc/s6-overlay/s6-rc.d/user/contents.d/pimcore-maintenance
     touch /etc/s6-overlay/s6-rc.d/user/contents.d/pimcore-messenger-consume-core
     touch /etc/s6-overlay/s6-rc.d/user/contents.d/pimcore-messenger-consume-image_optimize1
     touch /etc/s6-overlay/s6-rc.d/user/contents.d/pimcore-messenger-consume-image_optimize2
