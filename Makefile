@@ -11,7 +11,6 @@ build-arch:
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
-		--cache-from taywa/pimcore:latest \
 		-t taywa/pimcore:$(PIMCORE_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore
 	rm docker/pimcore/files.tar.gz
@@ -36,11 +35,11 @@ push-arch:
 
 build-extras-arch:
 	cd docker && docker buildx build \
+		--pull \
 		--load \
 		--platform linux/`arch|sed 's/x86_64/amd64/'` \
 		--secret id=GITHUBTOKEN,src=pimcore-extras/GITHUBTOKEN \
 		--build-arg BUILDKIT_INLINE_CACHE=1 \
-		--cache-from taywa/pimcore-extras:latest \
 		-t taywa/pimcore-extras:$(PIMCORE_EXTRAS_DOCKER)-`arch|sed 's/x86_64/amd64/'` \
 		pimcore-extras
 
