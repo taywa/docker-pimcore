@@ -192,9 +192,6 @@ RUN apt-get install -qqy --no-install-recommends \
     zlib1g-dev \
     && apt-get autoremove -y --purge
 RUN echo "EXTRA THUMBNAIL APPS"
-RUN apt-get install -qqy --no-install-recommends \
-    libreoffice \
-    inkscape
 ARG SKELETON_TAG=v2024.4.2
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
