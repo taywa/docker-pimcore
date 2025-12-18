@@ -191,7 +191,12 @@ RUN apt-get install -qqy --no-install-recommends \
     libzip-dev \
     zlib1g-dev \
     && apt-get autoremove -y --purge
-RUN echo "EXTRA THUMBNAIL APPS"
+RUN apt-get update && apt-get install -qqy --no-install-recommends \
+    libwebp7 \
+    libwebpmux3 \
+    libwebpdemux2 \
+    ffmpeg \
+    htop
 ARG SKELETON_TAG=v2024.4.2
 RUN cd /opt && git clone --branch $SKELETON_TAG --depth=1 https://github.com/pimcore/skeleton /opt/pimcore \
     && cd /opt/pimcore \
@@ -220,9 +225,6 @@ RUN composer config audit.block-insecure false \
     && composer install \
     && rm /root/.config/composer/auth.json
 # s6 overlay
-RUN apt-get update && apt-get install -qqy --no-install-recommends \
-    ffmpeg \
-    htop
 ARG S6_OVERLAY_VERSION=v3.2.1.0
 ENV S6_STAGE2_HOOK=/etc/s6-overlay/services-setup.sh
 ENV PATH="${PATH}:/command"
