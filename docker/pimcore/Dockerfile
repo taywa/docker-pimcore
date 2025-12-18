@@ -223,6 +223,9 @@ RUN composer config audit.block-insecure false \
     && composer install \
     && rm /root/.config/composer/auth.json
 # s6 overlay
+RUN apt-get update && apt-get install -qqy --no-install-recommends \
+    ffmpeg \
+    htop
 ARG S6_OVERLAY_VERSION=v3.2.1.0
 ENV S6_STAGE2_HOOK=/etc/s6-overlay/services-setup.sh
 ENV PATH="${PATH}:/command"
