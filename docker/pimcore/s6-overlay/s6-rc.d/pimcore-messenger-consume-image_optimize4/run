@@ -1,0 +1,4 @@
+#!/command/with-contenv sh
+
+cd /opt/pimcore
+exec s6-setuidgid www-data php bin/console messenger:consume $PIMCORE_MESSENGER_DEBUG pimcore_image_optimize --limit 10 --memory-limit=1024M --time-limit=600
