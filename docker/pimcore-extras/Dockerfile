@@ -44,12 +44,12 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && composer require --prefer-source "php-units-of-measure/php-units-of-measure" "v2.1.19" \
     && rm /root/.config/composer/auth.json
 
-# # ADD phpfastcache
-# RUN --mount=type=secret,id=GITHUBTOKEN,   uid=0 \
-#     --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
-#     composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
-#     && composer require phpfastcache/phpfastcache:^8.1.3 psr/cache:^1.0.0 \
-#     && rm /root/.config/composer/auth.json
+# # ADD gotenberg
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require gotenberg/gotenberg-php "v2.15.1" \
+    && rm /root/.config/composer/auth.json
 
 # ADD requirements for release management
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
