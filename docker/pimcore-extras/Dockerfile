@@ -57,4 +57,11 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && composer require league/commonmark:2.8.0 league/html-to-markdown:5.1.1 jfcherng/php-diff:6.16.2 \
     && rm /root/.config/composer/auth.json
 
+# ADD phpseclib/phpseclib
+RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
+    --mount=type=cache,mode=0777,uid=0,target=/root/.composer/cache \
+    composer config -g github-oauth.github.com $(cat /run/secrets/GITHUBTOKEN) \
+    && composer require phpseclib/phpseclib:3.0.48 \
+    && rm /root/.config/composer/auth.json
+
 ADD files-00/etc/gitconfig /etc/gitconfig
