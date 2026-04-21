@@ -8,11 +8,11 @@ if [ -d "/opt/pimcore/patches" ]; then
     done
 fi
 
-if grep "mailhub=mail" "/etc/ssmtp/ssmtp.conf" 2>/dev/null; then
+if grep "mailhub=" "/etc/ssmtp/ssmtp.conf" 2>/dev/null; then
     echo "* configure ssmtp"
     sed -i \
-        -e "s#mailhub=mail#mailhub=${MAILHUB:-localhost}#" \
-        -e "s#\#FromLineOverride=YES#FromLineOverride=YES${MAILHUB:-localhost}#" \
+        -e "s#mailhub=.*#mailhub=${MAILHUB:-localhost}#" \
+        -e "s#\#FromLineOverride=YES#FromLineOverride=YES#" \
         /etc/ssmtp/ssmtp.conf
 fi
 
