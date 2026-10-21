@@ -1,4 +1,4 @@
-FROM taywa/pimcore:11.5.13
+FROM taywa/pimcore:11.5.13b
 LABEL ch.taywa.image.authors="ys@taywa.ch"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
