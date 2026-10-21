@@ -65,3 +65,7 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 ADD files-00/etc/gitconfig /etc/gitconfig
+
+# add redis tools
+RUN apt-get update -qqy \
+    && apt-get install -qqy --no-install-recommends redis-tools
