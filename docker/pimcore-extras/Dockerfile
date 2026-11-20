@@ -1,7 +1,11 @@
-FROM taywa/pimcore:11.5.13b
+FROM taywa/pimcore:11.5.13c
 LABEL ch.taywa.image.authors="ys@taywa.ch"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_MEMORY_LIMIT=-1
+
+# add  tools
+RUN apt-get update -qqy \
+    && apt-get install -qqy --no-install-recommends redis-tools btop
 
 # ADD more pimcore related packages
 RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
@@ -65,7 +69,3 @@ RUN --mount=type=secret,id=GITHUBTOKEN,uid=0 \
     && rm /root/.config/composer/auth.json
 
 ADD files-00/etc/gitconfig /etc/gitconfig
-
-# add redis tools
-RUN apt-get update -qqy \
-    && apt-get install -qqy --no-install-recommends redis-tools
